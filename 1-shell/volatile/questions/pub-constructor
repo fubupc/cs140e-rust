@@ -1,0 +1,6 @@
+Q: If the Volatile type had been declared as follows instead:
+
+struct Volatile<T>(pub *mut T);
+A value of type Volatile could be constructed with Volatile(ptr) instead of having to call new. What benefit is there to ensuring that all values are constructed through the new static method?
+
+A: Using pub constructor cannot ensure that `read` and `write` is safe.

@@ -1,0 +1,5 @@
+Q: What must be true of the inputs to `new` for `read` and `write` to be safe? Would it be safe to instead mark `new` as safe and `read`/`write` as unsafe?
+
+A: 
+    1. For `read` and `write` to be safe, input raw pointer to `new` must be valid for `'static` lifetime.
+    2. Yes(?)

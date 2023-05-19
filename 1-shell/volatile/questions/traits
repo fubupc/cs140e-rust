@@ -1,0 +1,4 @@
+Q: You’ll notice that each type only implements one inherent method: new. The rest of a type’s methods come from implementations of the Readable, Writeable, and ReadableWriteable traits. What is the benefit to doing this? Describe at least two benefits to this approach.
+
+A: It has the following benefits:
+   1. Reuse code.

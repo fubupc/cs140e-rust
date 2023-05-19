@@ -1,0 +1,3 @@
+Q: The `ReadVolatile` and `WriteVolatile` types make it impossible to write and read, respectively, the underlying pointer. How do they accomplish this?
+
+A: By only implement `Readable` and `Writeable` trait respectively.

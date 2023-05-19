@@ -1,0 +1,3 @@
+Q: Both Volatile and UniqueVolatile allow read/write volatile accesses to an underlying pointer. According to the documentation, what is the difference between these two types?
+
+A: UniqueVolatile implements `Sync + Send`.

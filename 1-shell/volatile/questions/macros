@@ -1,0 +1,3 @@
+Q: What do the `readable!`, `writeable!`, and `readable_writeable!` macros do?
+
+A: These macros can generate code for implementing `Readable`, `Writeable` and `ReadableWriteable` traits respectively.
