@@ -59,7 +59,7 @@ function compile_test() {
     return 0
   fi
 
-  stderr=$(rustc "${file}" $RUSTC_FLAGS -Z no-trans 2>&1)
+  stderr=$(rustc "${file}" $RUSTC_FLAGS -Z no-codegen 2>&1)
   result=$?
 
   if $should_compile && [ $result -ne 0 ]; then
