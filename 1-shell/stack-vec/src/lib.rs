@@ -1,4 +1,3 @@
-#![cfg_attr(test, feature(inclusive_range_syntax))]
 #![no_std]
 
 #[cfg(test)]
@@ -15,7 +14,7 @@ mod tests;
 #[derive(Debug)]
 pub struct StackVec<'a, T: 'a> {
     storage: &'a mut [T],
-    len: usize
+    len: usize,
 }
 
 impl<'a, T: 'a> StackVec<'a, T> {
@@ -23,7 +22,7 @@ impl<'a, T: 'a> StackVec<'a, T> {
     /// store. The returned `StackVec` will be able to hold `storage.len()`
     /// values.
     pub fn new(storage: &'a mut [T]) -> StackVec<'a, T> {
-        unimplemented!()
+        StackVec { storage, len: 0 }
     }
 
     /// Constructs a new `StackVec<T>` using `storage` as the backing store. The
@@ -35,19 +34,21 @@ impl<'a, T: 'a> StackVec<'a, T> {
     ///
     /// Panics if `len > storage.len()`.
     pub fn with_len(storage: &'a mut [T], len: usize) -> StackVec<'a, T> {
-        unimplemented!()
+        StackVec { storage, len }
     }
 
     /// Returns the number of elements this vector can hold.
     pub fn capacity(&self) -> usize {
-        unimplemented!()
+        self.storage.len()
     }
 
     /// Shortens the vector, keeping the first `len` elements. If `len` is
     /// greater than the vector's current length, this has no effect. Note that
     /// this method has no effect on the capacity of the vector.
     pub fn truncate(&mut self, len: usize) {
-        unimplemented!()
+        if len < self.len {
+            self.len = len
+        }
     }
 
     /// Extracts a slice containing the entire vector, consuming `self`.
@@ -55,33 +56,33 @@ impl<'a, T: 'a> StackVec<'a, T> {
     /// Note that the returned slice's length will be the length of this vector,
     /// _not_ the length of the original backing storage.
     pub fn into_slice(self) -> &'a mut [T] {
-        unimplemented!()
+        &mut self.storage[0..self.len]
     }
 
     /// Extracts a slice containing the entire vector.
     pub fn as_slice(&self) -> &[T] {
-        unimplemented!()
+        &self.storage[0..self.len]
     }
 
     /// Extracts a mutable slice of the entire vector.
     pub fn as_mut_slice(&mut self) -> &mut [T] {
-        unimplemented!()
+        &mut self.storage[0..self.len]
     }
 
     /// Returns the number of elements in the vector, also referred to as its
     /// 'length'.
     pub fn len(&self) -> usize {
-        unimplemented!()
+        self.len
     }
 
     /// Returns true if the vector contains no elements.
     pub fn is_empty(&self) -> bool {
-        unimplemented!()
+        self.len == 0
     }
 
     /// Returns true if the vector is at capacity.
     pub fn is_full(&self) -> bool {
-        unimplemented!()
+        self.len == self.storage.len()
     }
 
     /// Appends `value` to the back of this vector if the vector is not full.
@@ -91,7 +92,17 @@ impl<'a, T: 'a> StackVec<'a, T> {
     /// If this vector is full, an `Err` is returned. Otherwise, `Ok` is
     /// returned.
     pub fn push(&mut self, value: T) -> Result<(), ()> {
-        unimplemented!()
+        if self.is_full() {
+            Err(())
+        } else {
+            self.storage[self.len] = value;
+            self.len += 1;
+            Ok(())
+        }
+    }
+
+    pub fn iter(&'a self) -> core::slice::Iter<'a, T> {
+        self.storage[0..self.len].iter()
     }
 }
 
@@ -99,9 +110,53 @@ impl<'a, T: Clone + 'a> StackVec<'a, T> {
     /// If this vector is not empty, removes the last element from this vector
     /// by cloning it and returns it. Otherwise returns `None`.
     pub fn pop(&mut self) -> Option<T> {
-        unimplemented!()
+        if self.is_empty() {
+            None
+        } else {
+            let t = self.storage[self.len - 1].clone();
+            self.len -= 1;
+            Some(t)
+        }
     }
 }
 
 // FIXME: Implement `Deref`, `DerefMut`, and `IntoIterator` for `StackVec`.
 // FIXME: Implement IntoIterator` for `&StackVec`.
+
+impl<'a, T> IntoIterator for StackVec<'a, T> {
+    type Item = &'a T;
+    type IntoIter = core::slice::Iter<'a, T>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        self.storage[0..self.len].into_iter()
+    }
+}
+
+impl<'a: 'b, 'b, T> IntoIterator for &'b StackVec<'a, T> {
+    type Item = &'b T;
+    type IntoIter = core::slice::Iter<'b, T>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        self.iter()
+    }
+}
+
+impl<'a, T> core::ops::Index<usize> for StackVec<'a, T> {
+    type Output = T;
+
+    fn index(&self, index: usize) -> &Self::Output {
+        if index >= self.len {
+            panic!("index out of bound")
+        }
+        &self.storage[index]
+    }
+}
+
+impl<'a, T> core::ops::IndexMut<usize> for StackVec<'a, T> {
+    fn index_mut(&mut self, index: usize) -> &mut Self::Output {
+        if index >= self.len {
+            panic!("index out of bound")
+        }
+        &mut self.storage[index]
+    }
+}
