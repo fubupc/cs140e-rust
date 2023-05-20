@@ -29,7 +29,7 @@ if ! cargo build; then
 fi
 
 echo -e "${KBLU}Opening PTYs...${KNRM}"
-PARAMS="pty,echo=0,raw,ispeed=115200,ospeed=115200,parenb=0,cs8,cstopb=0"
+PARAMS="pty,echo=0,raw,b115200,parenb=0,cs8,cstopb=0"
 socat -u ${PARAMS},link=input ${PARAMS},link=output &
 sleep 1
 
