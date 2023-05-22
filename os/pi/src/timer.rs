@@ -30,21 +30,29 @@ impl Timer {
     /// Reads the system timer's counter and returns the 64-bit counter value.
     /// The returned value is the number of elapsed microseconds.
     pub fn read(&self) -> u64 {
-        unimplemented!()
+        let high = self.registers.CHI.read();
+        let low = self.registers.CLO.read();
+        (high as u64) << 32 | low as u64
     }
 }
 
 /// Returns the current time in microseconds.
 pub fn current_time() -> u64 {
-    unimplemented!()
+    Timer::new().read()
 }
 
 /// Spins until `us` microseconds have passed.
 pub fn spin_sleep_us(us: u64) {
-    unimplemented!()
+    let start = current_time();
+    loop {
+        let now = current_time();
+        if now - start >= us {
+            break;
+        }
+    }
 }
 
 /// Spins until `ms` milliseconds have passed.
 pub fn spin_sleep_ms(ms: u64) {
-    unimplemented!()
+    spin_sleep_us(ms * 1000)
 }
