@@ -1,11 +1,12 @@
-TARGET ?= aarch64-none-elf
-CROSS ?= $(TARGET)
+TARGET ?= aarch64-unknown-none
+CROSS ?= aarch64-none-elf
 
 CC := $(CROSS)-gcc
 CCFLAGS ?= -Wall -O2 -nostdlib -nostartfiles -ffreestanding -pie -fpie
 # LDFLAGS ?= --gc-sections -static -pie -nostdlib -nostartfiles --no-dynamic-linker
-LDFLAGS ?= --gc-sections -static -nostdlib -nostartfiles --no-dynamic-linker
-XARGO ?= CARGO_INCREMENTAL=0 RUST_TARGET_PATH="$(shell pwd)" xargo
+LDFLAGS ?= -Wl,--gc-sections -static -nostdlib -nostartfiles -Wl,--no-dynamic-linker
+CARGO ?= cargo
+CARGO_FLAGS ?= -Zbuild-std=std,panic_abort
 
 LD_LAYOUT := ext/layout.ld
 
@@ -14,7 +15,7 @@ RUST_BUILD_DIR := target/$(TARGET)
 RUST_DEBUG_LIB := $(RUST_BUILD_DIR)/debug/lib$(RUST_BINARY).a
 RUST_RELEASE_LIB := $(RUST_BUILD_DIR)/release/lib$(RUST_BINARY).a
 
-RUST_DEPS = Xargo.toml Cargo.toml build.rs $(LD_LAYOUT) src/*
+RUST_DEPS = Cargo.toml build.rs $(LD_LAYOUT) src/*
 EXT_DEPS = $(BUILD_DIR)/init.o
 
 BUILD_DIR := build
@@ -28,15 +29,15 @@ VPATH = ext
 all: $(KERNEL).hex $(KERNEL).bin
 
 check:
-	@$(XARGO) check --target=$(TARGET)
+	@$(CARGO) check $(CARGO_FLAGS) --target=$(TARGET).json
 
 $(RUST_DEBUG_LIB): $(RUST_DEPS)
-	@echo "+ Building $@ [xargo]"
-	@$(XARGO) build --target=$(TARGET)
+	@echo "+ Building $@ [cargo]"
+	@$(CARGO) build $(CARGO_FLAGS) --target=$(TARGET).json
 
 $(RUST_RELEASE_LIB): $(RUST_DEPS)
-	@echo "+ Building $@ [xargo --release]"
-	@$(XARGO) build --release --target=$(TARGET)
+	@echo "+ Building $@ [cargo --release]"
+	@$(CARGO) build $(CARGO_FLAGS) --release --target=$(TARGET).json
 
 ifeq ($(DEBUG),1)
 $(RUST_LIB): $(RUST_DEBUG_LIB) | $(BUILD_DIR)
@@ -58,8 +59,8 @@ $(BUILD_DIR)/%.o: %.S | $(BUILD_DIR)
 	@$(CC) $(CCFLAGS) -c $< -o $@
 
 $(KERNEL).elf: $(EXT_DEPS) $(RUST_LIB) | $(BUILD_DIR)
-	@echo "+ Building $@ [ld $^]"
-	@$(CROSS)-ld $(LDFLAGS) -T$(LD_LAYOUT) $^ -o $@
+	@echo "+ Building $@ [gcc $^]"
+	@$(CROSS)-gcc $(LDFLAGS) -T$(LD_LAYOUT) $^ -o $@
 
 $(KERNEL).hex: $(KERNEL).elf | $(BUILD_DIR)
 	@echo "+ Building $@ [objcopy $<]"
@@ -70,5 +71,5 @@ $(KERNEL).bin: $(KERNEL).elf | $(BUILD_DIR)
 	@$(CROSS)-objcopy $< -O binary $@
 
 clean:
-	$(XARGO) clean
+	$(CARGO) clean
 	rm -rf $(BUILD_DIR)
