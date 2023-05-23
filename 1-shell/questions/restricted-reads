@@ -1,0 +1,3 @@
+Q: The BCM2837 documentation states that the `CLO` and `CHI` registers are read-only. Our code enforces this property. How? What prevents us from writing to `CLO` or `CHI`?
+
+A: By wrapping register in `ReadVolatile` type.

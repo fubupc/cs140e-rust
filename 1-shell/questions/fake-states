@@ -1,0 +1,3 @@
+Q: Consider what would happen if we let the user choose the initial state for a `Gpio` structure. What could go wrong?
+
+A: Forget to put the corresponding pin of `Gpio` into correct state.
