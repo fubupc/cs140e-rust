@@ -1,5 +1,5 @@
 use stack_vec::StackVec;
-use console::{kprint, kprintln, CONSOLE};
+use crate::console::{kprint, kprintln, CONSOLE};
 
 /// Error type for `Command` parse failures.
 #[derive(Debug)]

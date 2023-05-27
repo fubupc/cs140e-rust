@@ -3,7 +3,7 @@ use std::fmt;
 
 use pi::uart::MiniUart;
 
-use mutex::Mutex;
+use crate::mutex::Mutex;
 
 /// A global singleton allowing read/write access to the console.
 pub struct Console {
