@@ -1,3 +1,5 @@
+#![cfg_attr(target_arch = "aarch64", feature(restricted_std))]
+
 use std::io;
 
 mod progress;

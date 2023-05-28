@@ -1,9 +1,11 @@
-#![feature(asm, lang_items)]
+#![feature(restricted_std)]
+#![no_main]
 
-extern crate xmodem;
-extern crate pi;
+use pi;
+use xmodem;
 
-pub mod lang_items;
+use core::arch::{asm, global_asm};
+global_asm!(include_str!("../ext/init.S"));
 
 /// Start address of the binary to load and of the bootloader.
 const BINARY_START_ADDR: usize = 0x80000;
@@ -18,8 +20,10 @@ const MAX_BINARY_SIZE: usize = BOOTLOADER_START_ADDR - BINARY_START_ADDR;
 /// Branches to the address `addr` unconditionally.
 fn jump_to(addr: *mut u8) -> ! {
     unsafe {
-        asm!("br $0" : : "r"(addr as usize));
-        loop { asm!("nop" :::: "volatile")  }
+        asm!("br {}", in(reg) addr as usize);
+        loop {
+            asm!("nop")
+        }
     }
 }
 
