@@ -1,0 +1,5 @@
+Q: Your shell makes use of much of the code you’ve written. Briefly explain: which pieces does it makes use of and in what way?
+
+A: It uses:
+- `pi::uart` and `kernel::console` to receive input and echo back
+- `stack_vec::StackVec` to store received input characters and command parse results in stack-allocated memory.

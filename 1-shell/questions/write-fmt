@@ -1,0 +1,3 @@
+Q: The `_print` helper function calls `write_fmt` on an instance of `MutexGuard<Console>`, the return value from `Mutex<Console>::lock()`.Which type will have its `write_fmt` method called, and where does the method implementation come from ?
+
+A: `Console::write_fmt()` will be called. It comes from *blanket implementation* of `trait io::Write`.

@@ -1,0 +1,3 @@
+Q: You’ll notice that every example we’ve provided wraps the mutable reference in a container and then implements Drop for that container. What would go wrong if we returned an &mut T directly instead?
+
+A: Return `&mut T` directly means one can create mulitple mutable reference to same value which contradicts with Rust's borrow rules.
