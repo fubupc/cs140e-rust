@@ -368,7 +368,7 @@ impl<T: io::Read + io::Write> Xmodem<T> {
         self.write_byte(self.packet)?;
         self.write_byte(255 - self.packet)?;
         let mut checksum = 0u8;
-        for &b in &buf[0..128] {
+        for &b in buf {
             self.write_byte(b)?;
             checksum = checksum.wrapping_add(b);
         }
