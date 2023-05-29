@@ -1,0 +1,3 @@
+Q: Without the bootloader timing out and retrying a reception, it is possible for the transmitter to stall indefinitely under some conditions. What are those conditions, and why would the transmitter stall indefinitely?
+
+A: In XModem protocol, the receiver (bootloader) sends a `NAK` byte (*NCGbyte*) to initiate data transfer and waits for the first packet from the transmitter. Howerver, if the transmitter missed that NCGByte due to synchronization issue, such as running after the receiver, and there is no timeout mechanism in place, then both the receiver and transmitter will stuck to wait for each other indefinitely.
