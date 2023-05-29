@@ -124,14 +124,13 @@ impl MiniUart {
     pub fn wait_for_byte(&self) -> Result<(), ()> {
         match self.timeout {
             Some(timeout) => {
-                let start = timer::current_time();
+                let deadline = timer::current_time() + (timeout as u64 * 1000);
                 loop {
-                    let now = timer::current_time();
-                    if now - start >= timeout as u64 {
-                        return Err(());
-                    }
                     if self.has_byte() {
                         return Ok(());
+                    }
+                    if timer::current_time() > deadline {
+                        return Err(());
                     }
                 }
             }
@@ -184,13 +183,18 @@ mod uart_io {
 
     impl io::Read for MiniUart {
         fn read(&mut self, buf: &mut [u8]) -> io::Result<usize> {
-            for i in 0..buf.len() {
-                match self.wait_for_byte() {
-                    Ok(_) => buf[i] = self.read_byte(),
-                    Err(_) => return Err(io::ErrorKind::TimedOut.into()),
+            match self.wait_for_byte() {
+                Ok(_) => {
+                    for i in 0..buf.len() {
+                        buf[i] = self.read_byte();
+                        if !self.has_byte() {
+                            return Ok(i + 1);
+                        }
+                    }
+                    Ok(buf.len())
                 }
+                Err(_) => return Err(io::ErrorKind::TimedOut.into()),
             }
-            Ok(buf.len())
         }
     }
 
