@@ -44,19 +44,13 @@ impl Console {
 
 impl io::Read for Console {
     fn read(&mut self, buf: &mut [u8]) -> io::Result<usize> {
-        for i in 0..buf.len() {
-            buf[i] = self.read_byte();
-        }
-        Ok(buf.len())
+        self.inner().read(buf)
     }
 }
 
 impl io::Write for Console {
     fn write(&mut self, buf: &[u8]) -> io::Result<usize> {
-        for &b in buf {
-            self.write_byte(b);
-        }
-        Ok(buf.len())
+        self.inner().write(buf)
     }
 
     fn flush(&mut self) -> io::Result<()> {
