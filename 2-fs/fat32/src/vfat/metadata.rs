@@ -1,6 +1,6 @@
 use std::fmt;
 
-use traits;
+use crate::traits;
 
 /// A date as represented in FAT32 on-disk structures.
 #[repr(C, packed)]

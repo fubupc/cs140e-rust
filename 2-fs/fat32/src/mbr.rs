@@ -1,6 +1,6 @@
 use std::{fmt, io};
 
-use traits::BlockDevice;
+use crate::traits::BlockDevice;
 
 #[repr(C, packed)]
 #[derive(Copy, Clone)]

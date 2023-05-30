@@ -1,6 +1,6 @@
 use std::io;
 
-use mbr;
+use crate::mbr;
 
 #[derive(Debug)]
 pub enum Error {

@@ -1,7 +1,7 @@
 use std::io;
 use std::path::Path;
 
-use traits::Metadata;
+use crate::traits::Metadata;
 
 /// Trait implemented by files in the file system.
 pub trait File: io::Read + io::Write + io::Seek + Sized {

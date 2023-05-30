@@ -3,11 +3,11 @@ use std::path::Path;
 use std::mem::size_of;
 use std::cmp::min;
 
-use util::SliceExt;
-use mbr::MasterBootRecord;
-use vfat::{Shared, Cluster, File, Dir, Entry, FatEntry, Error, Status};
-use vfat::{BiosParameterBlock, CachedDevice, Partition};
-use traits::{FileSystem, BlockDevice};
+use crate::util::SliceExt;
+use crate::mbr::MasterBootRecord;
+use crate::vfat::{Shared, Cluster, File, Dir, Entry, FatEntry, Error, Status};
+use crate::vfat::{BiosParameterBlock, CachedDevice, Partition};
+use crate::traits::{FileSystem, BlockDevice};
 
 #[derive(Debug)]
 pub struct VFat {
@@ -54,9 +54,9 @@ impl VFat {
 }
 
 impl<'a> FileSystem for &'a Shared<VFat> {
-    type File = ::traits::Dummy;
-    type Dir = ::traits::Dummy;
-    type Entry = ::traits::Dummy;
+    type File = crate::traits::Dummy;
+    type Dir = crate::traits::Dummy;
+    type Entry = crate::traits::Dummy;
 
     fn open<P: AsRef<Path>>(self, path: P) -> io::Result<Self::Entry> {
         unimplemented!("FileSystem::open()")

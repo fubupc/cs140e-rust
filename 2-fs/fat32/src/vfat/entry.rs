@@ -1,5 +1,5 @@
-use traits;
-use vfat::{File, Dir, Metadata, Cluster};
+use crate::traits;
+use crate::vfat::{File, Dir, Metadata, Cluster};
 
 // TODO: You may need to change this definition.
 #[derive(Debug)]

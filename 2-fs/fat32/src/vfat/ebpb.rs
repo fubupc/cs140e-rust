@@ -1,7 +1,7 @@
 use std::fmt;
 
-use traits::BlockDevice;
-use vfat::Error;
+use crate::traits::BlockDevice;
+use crate::vfat::Error;
 
 #[repr(C, packed)]
 pub struct BiosParameterBlock {

@@ -1,8 +1,8 @@
 use std::cmp::{min, max};
 use std::io::{self, SeekFrom};
 
-use traits;
-use vfat::{VFat, Shared, Cluster, Metadata};
+use crate::traits;
+use crate::vfat::{VFat, Shared, Cluster, Metadata};
 
 #[derive(Debug)]
 pub struct File {

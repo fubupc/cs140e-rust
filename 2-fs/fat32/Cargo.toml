@@ -2,6 +2,7 @@
 name = "fat32"
 version = "0.1.0"
 authors = ["Sergio Benitez <sb@sergio.bz>"]
+edition = "2021"
 
 [dependencies]
 

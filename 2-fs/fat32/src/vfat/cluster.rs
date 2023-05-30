@@ -1,4 +1,4 @@
-use vfat::*;
+use crate::vfat::*;
 
 #[derive(PartialEq, Eq, PartialOrd, Ord, Debug, Copy, Clone, Hash)]
 pub struct Cluster(u32);

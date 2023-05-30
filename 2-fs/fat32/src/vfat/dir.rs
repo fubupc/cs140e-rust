@@ -3,10 +3,10 @@ use std::char::decode_utf16;
 use std::borrow::Cow;
 use std::io;
 
-use traits;
-use util::VecExt;
-use vfat::{VFat, Shared, File, Cluster, Entry};
-use vfat::{Metadata, Attributes, Timestamp, Time, Date};
+use crate::traits;
+use crate::util::VecExt;
+use crate::vfat::{VFat, Shared, File, Cluster, Entry};
+use crate::vfat::{Metadata, Attributes, Timestamp, Time, Date};
 
 #[derive(Debug)]
 pub struct Dir {
