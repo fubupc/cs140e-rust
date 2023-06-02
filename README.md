@@ -12,10 +12,15 @@ The original course uses these build tools:
 But newer Rust (e.g. `nightly-2023-05-25`) provides `-build-std` feature and good support for `aarch64-unknown-none` target so `Xargo` and `aarch64-none-elf` GNU toolchain are no longer needed:
 ```Shell
 rustup default nightly-2023-05-25
-rustup target add aarch64-unknown-none # add pre-compiled copy of std library for aarch64-unknown-none
-rustup component add rust-src # to recompile standard libraries (core, compiler_builtins etc.)
 cargo install cargo-binutils # make it easy to use the LLVM tools
 ```
+
+(Optional) If you want to use official std lib instead of [the customized one](os/std):
+```Shell
+rustup target add aarch64-unknown-none # add pre-compiled copy of std library for aarch64-unknown-none
+rustup component add rust-src # to recompile standard libraries (core, compiler_builtins etc.)
+```
+
 PS: More build settings refer to [os/kernel/rust-toolchain.tom](os/kernel/rust-toolchain.toml) and [os/kernel/.cargo/config.toml](os/kernel/.cargo/config.toml). 
 
 ### Build
@@ -29,9 +34,9 @@ rust-objcopy target/aarch64-unknown-none/release/kernel -O binary <overwrite ker
 ## Run in `QEMU`
 QEMU can be used to emulate a Raspberry Pi 3B+:
 ```Shell
-qemu-system-aarch64 -machine raspi3b -serial null -serial stdio -kernel ./kernel8.img
+qemu-system-aarch64 -machine raspi3b -serial null -serial stdio -kernel target/aarch64-unknown-none/release/kernel # or the bin file produced by rust-objcopy
 ```
-The first `-serial null` redirects `UART0` (`PL011`) to the *host* void device, the second `-serial stdio` to redirect `UART1` (`mini UART`) to the *host* stdio.
+PS: The first `-serial null` redirects `UART0` (`PL011`) to the *host* void device, the second `-serial stdio` to redirect `UART1` (`mini UART`) to the *host* stdio.
 
 ## `config.txt`
 From [Raspberry Pi's doc](https://www.raspberrypi.com/documentation/computers/config_txt.html#what-is-config-txt):
