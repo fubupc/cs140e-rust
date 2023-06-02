@@ -1,7 +1,12 @@
 #![feature(decl_macro)]
 #![feature(negative_impls)]
-#![feature(restricted_std)]
+#![no_std]
 #![no_main]
+
+#[panic_handler]
+fn panic_handler(_: &core::panic::PanicInfo) -> ! {
+    loop {}
+}
 
 pub mod console;
 pub mod mutex;
