@@ -468,7 +468,7 @@ const DEFAULT_BUF_SIZE: usize = 4096;
 /// [`&str`]: ../../std/primitive.str.html
 /// [slice]: ../../std/primitive.slice.html
 #[stable(feature = "rust1", since = "1.0.0")]
-#[doc(spotlight)]
+#[doc(notable_trait)]
 pub trait Read {
     /// Pull some bytes from this source into the specified buffer, returning
     /// how many bytes were read.
@@ -987,7 +987,7 @@ impl Initializer {
 /// # }
 /// ```
 #[stable(feature = "rust1", since = "1.0.0")]
-#[doc(spotlight)]
+#[doc(notable_trait)]
 pub trait Write {
     /// Write a buffer into this object, returning how many bytes were written.
     ///
@@ -1962,7 +1962,7 @@ impl<T: BufRead> BufRead for Take<T> {
     }
 }
 
-fn read_one_byte(reader: &mut Read) -> Option<Result<u8>> {
+fn read_one_byte(reader: &mut dyn Read) -> Option<Result<u8>> {
     let mut buf = [0];
     loop {
         return match reader.read(&mut buf) {
