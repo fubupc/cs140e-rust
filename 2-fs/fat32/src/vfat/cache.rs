@@ -17,7 +17,7 @@ pub struct Partition {
 }
 
 pub struct CachedDevice {
-    device: Box<BlockDevice>,
+    device: Box<dyn BlockDevice>,
     cache: HashMap<u64, CacheEntry>,
     partition: Partition
 }
