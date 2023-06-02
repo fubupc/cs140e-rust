@@ -6,11 +6,10 @@
 // #![feature(attr_literals)]
 #![feature(never_type)]
 
-#![cfg_attr(not(feature = "std"), no_std)]
-#![cfg_attr(feature = "std", feature(restricted_std))]
+#![no_std] // Use customized std instead
 
 #[cfg(feature = "std")]
-extern crate core;
+extern crate std;
 extern crate volatile;
 
 pub mod timer;

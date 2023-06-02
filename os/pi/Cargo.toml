@@ -6,5 +6,7 @@ authors = ["Sergio Benitez <sb@sergio.bz>"]
 [dependencies]
 volatile = { path = "../volatile" }
 
+std = { path = "../std" }
+
 [features]
 std = []
