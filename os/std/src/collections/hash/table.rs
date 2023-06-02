@@ -8,7 +8,7 @@
 // option. This file may not be copied, modified, or distributed
 // except according to those terms.
 
-use alloc::heap::{Heap, Alloc, Layout};
+use alloc::alloc::{handle_alloc_error, dealloc, Global, Allocator, Layout};
 
 use cmp;
 use hash::{BuildHasher, Hash, Hasher};
@@ -16,7 +16,8 @@ use marker;
 use mem::{align_of, size_of, needs_drop};
 use mem;
 use ops::{Deref, DerefMut};
-use ptr::{self, Unique, Shared};
+use ptr::{self, Unique, NonNull};
+
 
 use self::BucketState::*;
 
@@ -777,8 +778,8 @@ impl<K, V> RawTable<K, V> {
                     .expect("capacity overflow"),
                 "capacity overflow");
 
-        let buffer = Heap.alloc(Layout::from_size_align(size, alignment).unwrap())
-            .unwrap_or_else(|e| Heap.oom(e));
+        let layout = Layout::from_size_align(size, alignment).unwrap();
+        let buffer = Global.allocate(layout).unwrap_or_else(|e| handle_alloc_error(layout)).as_mut_ptr();
 
         let hashes = buffer as *mut HashUint;
 
@@ -873,7 +874,7 @@ impl<K, V> RawTable<K, V> {
                 elems_left,
                 marker: marker::PhantomData,
             },
-            table: Shared::from(self),
+            table: NonNull::from(self),
             marker: marker::PhantomData,
         }
     }
@@ -1020,7 +1021,7 @@ impl<K, V> IntoIter<K, V> {
 
 /// Iterator over the entries in a table, clearing the table.
 pub struct Drain<'a, K: 'a, V: 'a> {
-    table: Shared<RawTable<K, V>>,
+    table: NonNull<RawTable<K, V>>,
     iter: RawBuckets<'static, K, V>,
     marker: marker::PhantomData<&'a RawTable<K, V>>,
 }
@@ -1188,7 +1189,7 @@ unsafe impl<#[may_dangle] K, #[may_dangle] V> Drop for RawTable<K, V> {
         debug_assert!(!oflo, "should be impossible");
 
         unsafe {
-            Heap.dealloc(self.hashes.ptr() as *mut u8,
+            dealloc(self.hashes.ptr() as *mut u8,
                          Layout::from_size_align(size, align).unwrap());
             // Remember how everything was allocated out of one buffer
             // during initialization? We only need one call to free here.

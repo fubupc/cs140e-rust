@@ -186,7 +186,7 @@ pub enum ErrorKind {
     #[unstable(feature = "io_error_internals",
                reason = "better expressed through extensible enums that this \
                          enum cannot be exhaustively matched against",
-               issue = "0")]
+               issue = "none")]
     #[doc(hidden)]
     __Nonexhaustive,
 }
@@ -579,12 +579,12 @@ mod test {
         let msg = error_string(code);
         let kind = decode_error_kind(code);
         let err = Error {
-            repr: Repr::Custom(box Custom {
+            repr: Repr::Custom(Box::new(Custom {
                 kind: ErrorKind::InvalidInput,
-                error: box Error {
+                error: Box::new(Error {
                     repr: super::Repr::Os(code)
-                },
-            })
+                }),
+            }))
         };
         let expected = format!(
             "Custom {{ \

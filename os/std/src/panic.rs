@@ -355,7 +355,7 @@ impl<T: fmt::Debug> fmt::Debug for AssertUnwindSafe<T> {
 #[stable(feature = "catch_unwind", since = "1.9.0")]
 pub fn catch_unwind<F: FnOnce() -> R + UnwindSafe, R>(f: F) -> Result<R> {
     unsafe {
-        panicking::try(f)
+        panicking::r#try(f)
     }
 }
 

@@ -419,24 +419,24 @@
 
 #![stable(feature = "rust1", since = "1.0.0")]
 
+// #[stable(feature = "rust1", since = "1.0.0")]
+// pub use alloc::Bound;
 #[stable(feature = "rust1", since = "1.0.0")]
-pub use alloc::Bound;
+pub use alloc::collections::{BinaryHeap, BTreeMap, BTreeSet};
 #[stable(feature = "rust1", since = "1.0.0")]
-pub use alloc::{BinaryHeap, BTreeMap, BTreeSet};
+pub use alloc::collections::{LinkedList, VecDeque};
 #[stable(feature = "rust1", since = "1.0.0")]
-pub use alloc::{LinkedList, VecDeque};
+pub use alloc::collections::{binary_heap, btree_map, btree_set};
 #[stable(feature = "rust1", since = "1.0.0")]
-pub use alloc::{binary_heap, btree_map, btree_set};
-#[stable(feature = "rust1", since = "1.0.0")]
-pub use alloc::{linked_list, vec_deque};
+pub use alloc::collections::{linked_list, vec_deque};
 
 #[stable(feature = "rust1", since = "1.0.0")]
 pub use self::hash_map::HashMap;
 #[stable(feature = "rust1", since = "1.0.0")]
 pub use self::hash_set::HashSet;
 
-#[stable(feature = "rust1", since = "1.0.0")]
-pub use alloc::range;
+// #[stable(feature = "rust1", since = "1.0.0")]
+// pub use alloc::range;
 
 mod hash;
 

@@ -417,7 +417,7 @@ pub fn update_panic_count(amt: isize) -> usize {
 pub use realstd::rt::update_panic_count;
 
 /// Invoke a closure, capturing the cause of an unwinding panic if one occurs.
-pub unsafe fn try<R, F: FnOnce() -> R>(f: F) -> Result<R, Box<Any + Send>> {
+pub unsafe fn r#try<R, F: FnOnce() -> R>(f: F) -> Result<R, Box<Any + Send>> {
     #[allow(unions_with_drop_fields)]
     union Data<F, R> {
         f: F,

@@ -18,7 +18,7 @@
 #![stable(feature = "rust1", since = "1.0.0")]
 
 #[stable(feature = "rust1", since = "1.0.0")]
-pub use alloc::arc::{Arc, Weak};
+pub use alloc::sync::{Arc, Weak};
 #[stable(feature = "rust1", since = "1.0.0")]
 pub use core::sync::atomic;
 
@@ -75,6 +75,7 @@ unsafe impl<'a, T: Sync> Sync for MutexGuard<'a, T> { }
 
 impl<T> Mutex<T> {
     #[stable(feature = "rust1", since = "1.0.0")]
+    #[rustc_const_stable(feature = "rust1", since = "1.0.0")]
     pub const fn new(val: T) -> Mutex<T> {
         Mutex {
             lock: AtomicBool::new(false),

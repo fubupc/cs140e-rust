@@ -34,7 +34,7 @@ pub mod os_str {
     use sync::Arc;
     use sys_common::{AsInner, IntoInner};
     use sys_common::bytestring::debug_fmt_bytestring;
-    use std_unicode::lossy::Utf8Lossy;
+    // use std_unicode::lossy::Utf8Lossy;
 
     #[derive(Clone, Hash)]
     pub struct Buf {
@@ -53,7 +53,7 @@ pub mod os_str {
 
     impl fmt::Display for Slice {
         fn fmt(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
-            fmt::Display::fmt(&Utf8Lossy::from_bytes(&self.inner), formatter)
+            debug_fmt_bytestring(&self.inner, formatter)
         }
     }
 

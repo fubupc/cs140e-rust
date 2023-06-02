@@ -51,11 +51,11 @@
 // coherence challenge (e.g., specialization, neg impls, etc) we can
 // reconsider what crate these items belong in.
 
-use alloc::allocator;
+use alloc::alloc as allocator;
 use any::TypeId;
 use borrow::Cow;
 use cell;
-use char;
+use core::char;
 use convert;
 use core::array;
 use fmt::{self, Debug, Display};
@@ -242,20 +242,20 @@ impl Error for ! {
 #[unstable(feature = "allocator_api",
            reason = "the precise API and guarantees it provides may be tweaked.",
            issue = "32838")]
-impl Error for allocator::AllocErr {
+impl Error for allocator::AllocError {
     fn description(&self) -> &str {
-        allocator::AllocErr::description(self)
+        allocator::AllocError::description(self)
     }
 }
 
-#[unstable(feature = "allocator_api",
-           reason = "the precise API and guarantees it provides may be tweaked.",
-           issue = "32838")]
-impl Error for allocator::CannotReallocInPlace {
-    fn description(&self) -> &str {
-        allocator::CannotReallocInPlace::description(self)
-    }
-}
+// #[unstable(feature = "allocator_api",
+//            reason = "the precise API and guarantees it provides may be tweaked.",
+//            issue = "32838")]
+// impl Error for allocator::CannotReallocInPlace {
+//     fn description(&self) -> &str {
+//         allocator::CannotReallocInPlace::description(self)
+//     }
+// }
 
 #[stable(feature = "rust1", since = "1.0.0")]
 impl Error for str::ParseBoolError {
@@ -269,33 +269,33 @@ impl Error for str::Utf8Error {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
-impl Error for num::ParseIntError {
-    fn description(&self) -> &str {
-        self.__description()
-    }
-}
+// #[stable(feature = "rust1", since = "1.0.0")]
+// impl Error for num::ParseIntError {
+//     fn description(&self) -> &str {
+//         self.__description()
+//     }
+// }
 
-#[unstable(feature = "try_from", issue = "33417")]
-impl Error for num::TryFromIntError {
-    fn description(&self) -> &str {
-        self.__description()
-    }
-}
+// #[stable(feature = "rust1", since = "1.0.0")]
+// impl Error for num::TryFromIntError {
+//     fn description(&self) -> &str {
+//         self.__description()
+//     }
+// }
 
-#[unstable(feature = "try_from", issue = "33417")]
-impl Error for array::TryFromSliceError {
-    fn description(&self) -> &str {
-        self.__description()
-    }
-}
+// #[stable(feature = "rust1", since = "1.0.0")]
+// impl Error for array::TryFromSliceError {
+//     fn description(&self) -> &str {
+//         self.__description()
+//     }
+// }
 
-#[stable(feature = "rust1", since = "1.0.0")]
-impl Error for num::ParseFloatError {
-    fn description(&self) -> &str {
-        self.__description()
-    }
-}
+// #[stable(feature = "rust1", since = "1.0.0")]
+// impl Error for num::ParseFloatError {
+//     fn description(&self) -> &str {
+//         self.__description()
+//     }
+// }
 
 #[stable(feature = "rust1", since = "1.0.0")]
 impl Error for string::FromUtf8Error {
@@ -357,27 +357,27 @@ impl Error for cell::BorrowMutError {
     }
 }
 
-#[unstable(feature = "try_from", issue = "33417")]
+#[stable(feature = "rust1", since = "1.0.0")]
 impl Error for char::CharTryFromError {
     fn description(&self) -> &str {
         "converted integer out of range for `char`"
     }
 }
 
-#[stable(feature = "char_from_str", since = "1.20.0")]
-impl Error for char::ParseCharError {
-    fn description(&self) -> &str {
-        self.__description()
-    }
-}
+// #[stable(feature = "char_from_str", since = "1.20.0")]
+// impl Error for char::ParseCharError {
+//     fn description(&self) -> &str {
+//         self.__description()
+//     }
+// }
 
-#[unstable(feature = "try_from", issue = "33417")]
-impl Error for convert::Infallible {
-    fn description(&self) -> &str {
-        match *self {
-        }
-    }
-}
+// #[stable(feature = "rust1", since = "1.0.0")]
+// impl Error for convert::Infallible {
+//     fn description(&self) -> &str {
+//         match *self {
+//         }
+//     }
+// }
 
 // copied from any.rs
 impl Error + 'static {

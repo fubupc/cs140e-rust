@@ -46,8 +46,13 @@
 #[stable(feature = "rust1", since = "1.0.0")]
 #[doc(no_inline)] pub use result::Result::{self, Ok, Err};
 #[stable(feature = "rust1", since = "1.0.0")]
-#[doc(no_inline)] pub use slice::SliceConcatExt;
+#[doc(no_inline)] pub use alloc::slice::Concat;
 #[stable(feature = "rust1", since = "1.0.0")]
 #[doc(no_inline)] pub use string::{String, ToString};
 #[stable(feature = "rust1", since = "1.0.0")]
 #[doc(no_inline)] pub use vec::Vec;
+
+
+// More
+#[stable(feature = "rust1", since = "1.0.0")]
+#[doc(no_inline)] pub use core::prelude::v1::{derive, test, Debug, Hash};

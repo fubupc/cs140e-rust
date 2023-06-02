@@ -11,7 +11,7 @@
 #![allow(dead_code)]
 
 use fmt::{Formatter, Result, Write};
-use std_unicode::lossy::{Utf8Lossy, Utf8LossyChunk};
+use core::str::Utf8Chunks;
 
 pub fn debug_fmt_bytestring(slice: &[u8], f: &mut Formatter) -> Result {
     // Writes out a valid unicode string with the correct escape sequences
@@ -23,9 +23,9 @@ pub fn debug_fmt_bytestring(slice: &[u8], f: &mut Formatter) -> Result {
     }
 
     f.write_str("\"")?;
-    for Utf8LossyChunk { valid, broken } in Utf8Lossy::from_bytes(slice).chunks() {
-        write_str_escaped(f, valid)?;
-        for b in broken {
+    for chunk in Utf8Chunks::new(slice) {
+        write_str_escaped(f, chunk.valid())?;
+        for b in chunk.invalid() {
             write!(f, "\\x{:02X}", b)?;
         }
     }

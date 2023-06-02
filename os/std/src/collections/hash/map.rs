@@ -19,7 +19,7 @@ use fmt::{self, Debug};
 use hash::{Hash, Hasher, BuildHasher, SipHasher13};
 use iter::{FromIterator, FusedIterator};
 use mem::{self, replace};
-use ops::{Deref, Index, InPlace, Place, Placer};
+use ops::{Deref, Index};
 use ptr;
 //- use sys;
 
@@ -1729,7 +1729,7 @@ impl<'a, K, V> ExactSizeIterator for Iter<'a, K, V> {
     }
 }
 
-#[unstable(feature = "fused", issue = "35602")]
+#[stable(feature = "rust1", since = "1.0.0")]
 impl<'a, K, V> FusedIterator for Iter<'a, K, V> {}
 
 #[stable(feature = "rust1", since = "1.0.0")]
@@ -1752,7 +1752,7 @@ impl<'a, K, V> ExactSizeIterator for IterMut<'a, K, V> {
         self.inner.len()
     }
 }
-#[unstable(feature = "fused", issue = "35602")]
+#[stable(feature = "rust1", since = "1.0.0")]
 impl<'a, K, V> FusedIterator for IterMut<'a, K, V> {}
 
 #[stable(feature = "std_debug", since = "1.16.0")]
@@ -1787,7 +1787,7 @@ impl<K, V> ExactSizeIterator for IntoIter<K, V> {
         self.inner.len()
     }
 }
-#[unstable(feature = "fused", issue = "35602")]
+#[stable(feature = "rust1", since = "1.0.0")]
 impl<K, V> FusedIterator for IntoIter<K, V> {}
 
 #[stable(feature = "std_debug", since = "1.16.0")]
@@ -1819,7 +1819,7 @@ impl<'a, K, V> ExactSizeIterator for Keys<'a, K, V> {
         self.inner.len()
     }
 }
-#[unstable(feature = "fused", issue = "35602")]
+#[stable(feature = "rust1", since = "1.0.0")]
 impl<'a, K, V> FusedIterator for Keys<'a, K, V> {}
 
 #[stable(feature = "rust1", since = "1.0.0")]
@@ -1842,7 +1842,7 @@ impl<'a, K, V> ExactSizeIterator for Values<'a, K, V> {
         self.inner.len()
     }
 }
-#[unstable(feature = "fused", issue = "35602")]
+#[stable(feature = "rust1", since = "1.0.0")]
 impl<'a, K, V> FusedIterator for Values<'a, K, V> {}
 
 #[stable(feature = "map_values_mut", since = "1.10.0")]
@@ -1865,7 +1865,7 @@ impl<'a, K, V> ExactSizeIterator for ValuesMut<'a, K, V> {
         self.inner.len()
     }
 }
-#[unstable(feature = "fused", issue = "35602")]
+#[stable(feature = "rust1", since = "1.0.0")]
 impl<'a, K, V> FusedIterator for ValuesMut<'a, K, V> {}
 
 #[stable(feature = "std_debug", since = "1.16.0")]
@@ -1900,7 +1900,7 @@ impl<'a, K, V> ExactSizeIterator for Drain<'a, K, V> {
         self.inner.len()
     }
 }
-#[unstable(feature = "fused", issue = "35602")]
+#[stable(feature = "rust1", since = "1.0.0")]
 impl<'a, K, V> FusedIterator for Drain<'a, K, V> {}
 
 #[stable(feature = "std_debug", since = "1.16.0")]
@@ -1949,45 +1949,45 @@ impl<'a, K, V> Drop for EntryPlace<'a, K, V> {
     }
 }
 
-#[unstable(feature = "collection_placement",
-           reason = "placement protocol is subject to change",
-           issue = "30172")]
-impl<'a, K, V> Placer<V> for Entry<'a, K, V> {
-    type Place = EntryPlace<'a, K, V>;
+// #[unstable(feature = "collection_placement",
+//            reason = "placement protocol is subject to change",
+//            issue = "30172")]
+// impl<'a, K, V> Placer<V> for Entry<'a, K, V> {
+//     type Place = EntryPlace<'a, K, V>;
 
-    fn make_place(self) -> EntryPlace<'a, K, V> {
-        let b = match self {
-            Occupied(mut o) => {
-                unsafe { ptr::drop_in_place(o.elem.read_mut().1); }
-                o.elem
-            }
-            Vacant(v) => {
-                unsafe { v.insert_key() }
-            }
-        };
-        EntryPlace { bucket: b }
-    }
-}
+//     fn make_place(self) -> EntryPlace<'a, K, V> {
+//         let b = match self {
+//             Occupied(mut o) => {
+//                 unsafe { ptr::drop_in_place(o.elem.read_mut().1); }
+//                 o.elem
+//             }
+//             Vacant(v) => {
+//                 unsafe { v.insert_key() }
+//             }
+//         };
+//         EntryPlace { bucket: b }
+//     }
+// }
 
-#[unstable(feature = "collection_placement",
-           reason = "placement protocol is subject to change",
-           issue = "30172")]
-impl<'a, K, V> Place<V> for EntryPlace<'a, K, V> {
-    fn pointer(&mut self) -> *mut V {
-        self.bucket.read_mut().1
-    }
-}
+// #[unstable(feature = "collection_placement",
+//            reason = "placement protocol is subject to change",
+//            issue = "30172")]
+// impl<'a, K, V> Place<V> for EntryPlace<'a, K, V> {
+//     fn pointer(&mut self) -> *mut V {
+//         self.bucket.read_mut().1
+//     }
+// }
 
-#[unstable(feature = "collection_placement",
-           reason = "placement protocol is subject to change",
-           issue = "30172")]
-impl<'a, K, V> InPlace<V> for EntryPlace<'a, K, V> {
-    type Owner = ();
+// #[unstable(feature = "collection_placement",
+//            reason = "placement protocol is subject to change",
+//            issue = "30172")]
+// impl<'a, K, V> InPlace<V> for EntryPlace<'a, K, V> {
+//     type Owner = ();
 
-    unsafe fn finalize(self) {
-        mem::forget(self);
-    }
-}
+//     unsafe fn finalize(self) {
+//         mem::forget(self);
+//     }
+// }
 
 impl<'a, K, V> Entry<'a, K, V> {
     #[stable(feature = "rust1", since = "1.0.0")]
@@ -3584,56 +3584,56 @@ mod test_map {
         panic!("Adaptive early resize failed");
     }
 
-    #[test]
-    fn test_placement_in() {
-        let mut map = HashMap::new();
-        map.extend((0..10).map(|i| (i, i)));
+    // #[test]
+    // fn test_placement_in() {
+    //     let mut map = HashMap::new();
+    //     map.extend((0..10).map(|i| (i, i)));
 
-        map.entry(100) <- 100;
-        assert_eq!(map[&100], 100);
+    //     map.entry(100) <- 100;
+    //     assert_eq!(map[&100], 100);
 
-        map.entry(0) <- 10;
-        assert_eq!(map[&0], 10);
+    //     map.entry(0) <- 10;
+    //     assert_eq!(map[&0], 10);
 
-        assert_eq!(map.len(), 11);
-    }
+    //     assert_eq!(map.len(), 11);
+    // }
 
-    #[test]
-    fn test_placement_panic() {
-        let mut map = HashMap::new();
-        map.extend((0..10).map(|i| (i, i)));
+    // #[test]
+    // fn test_placement_panic() {
+    //     let mut map = HashMap::new();
+    //     map.extend((0..10).map(|i| (i, i)));
 
-        fn mkpanic() -> usize { panic!() }
+    //     fn mkpanic() -> usize { panic!() }
 
-        // modify existing key
-        // when panic happens, previous key is removed.
-        let _ = panic::catch_unwind(panic::AssertUnwindSafe(|| { map.entry(0) <- mkpanic(); }));
-        assert_eq!(map.len(), 9);
-        assert!(!map.contains_key(&0));
+    //     // modify existing key
+    //     // when panic happens, previous key is removed.
+    //     let _ = panic::catch_unwind(panic::AssertUnwindSafe(|| { map.entry(0) <- mkpanic(); }));
+    //     assert_eq!(map.len(), 9);
+    //     assert!(!map.contains_key(&0));
 
-        // add new key
-        let _ = panic::catch_unwind(panic::AssertUnwindSafe(|| { map.entry(100) <- mkpanic(); }));
-        assert_eq!(map.len(), 9);
-        assert!(!map.contains_key(&100));
-    }
+    //     // add new key
+    //     let _ = panic::catch_unwind(panic::AssertUnwindSafe(|| { map.entry(100) <- mkpanic(); }));
+    //     assert_eq!(map.len(), 9);
+    //     assert!(!map.contains_key(&100));
+    // }
 
-    #[test]
-    fn test_placement_drop() {
-        // correctly drop
-        struct TestV<'a>(&'a mut bool);
-        impl<'a> Drop for TestV<'a> {
-            fn drop(&mut self) {
-                if !*self.0 { panic!("value double drop!"); } // no double drop
-                *self.0 = false;
-            }
-        }
+    // #[test]
+    // fn test_placement_drop() {
+    //     // correctly drop
+    //     struct TestV<'a>(&'a mut bool);
+    //     impl<'a> Drop for TestV<'a> {
+    //         fn drop(&mut self) {
+    //             if !*self.0 { panic!("value double drop!"); } // no double drop
+    //             *self.0 = false;
+    //         }
+    //     }
 
-        fn makepanic<'a>() -> TestV<'a> { panic!() }
+    //     fn makepanic<'a>() -> TestV<'a> { panic!() }
 
-        let mut can_drop = true;
-        let mut hm = HashMap::new();
-        hm.insert(0, TestV(&mut can_drop));
-        let _ = panic::catch_unwind(panic::AssertUnwindSafe(|| { hm.entry(0) <- makepanic(); }));
-        assert_eq!(hm.len(), 0);
-    }
+    //     let mut can_drop = true;
+    //     let mut hm = HashMap::new();
+    //     hm.insert(0, TestV(&mut can_drop));
+    //     let _ = panic::catch_unwind(panic::AssertUnwindSafe(|| { hm.entry(0) <- makepanic(); }));
+    //     assert_eq!(hm.len(), 0);
+    // }
 }
