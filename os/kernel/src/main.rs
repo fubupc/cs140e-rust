@@ -1,17 +1,15 @@
 #![feature(decl_macro)]
 #![feature(negative_impls)]
 #![feature(allocator_api)]
+#![feature(lang_items)]
+#![feature(panic_info_message)]
 #![no_std]
 #![no_main]
-
-#[panic_handler]
-fn panic_handler(_: &core::panic::PanicInfo) -> ! {
-    loop {}
-}
 
 pub mod allocator;
 pub mod console;
 pub mod fs;
+pub mod lang_items;
 pub mod mutex;
 pub mod shell;
 
@@ -31,6 +29,6 @@ pub static ALLOCATOR: &Allocator = &_ALLOCATOR;
 pub static FILE_SYSTEM: FileSystem = FileSystem::uninitialized();
 #[no_mangle]
 pub unsafe extern "C" fn kmain() -> ! {
-    // ALLOCATOR.initialize();
+    ALLOCATOR.initialize();
     shell::shell("> ")
 }
