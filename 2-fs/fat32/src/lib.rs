@@ -2,6 +2,7 @@
 #![feature(prelude_import)]
 
 #![no_std]
+#![allow(unused)]
 
 extern crate std;
 #[prelude_import]

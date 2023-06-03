@@ -5,9 +5,10 @@
 // #![feature(repr_align)]
 // #![feature(attr_literals)]
 #![feature(never_type)]
-#![feature(pointer_methods)]
+// #![feature(pointer_methods)]
 
 #![no_std]
+#![allow(unused)]
 
 #[cfg(feature = "std")]
 extern crate std;

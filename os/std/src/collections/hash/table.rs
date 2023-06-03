@@ -779,7 +779,7 @@ impl<K, V> RawTable<K, V> {
                 "capacity overflow");
 
         let layout = Layout::from_size_align(size, alignment).unwrap();
-        let buffer = Global.allocate(layout).unwrap_or_else(|e| handle_alloc_error(layout)).as_mut_ptr();
+        let buffer = Global.allocate(layout).unwrap_or_else(|_e| handle_alloc_error(layout)).as_mut_ptr();
 
         let hashes = buffer as *mut HashUint;
 

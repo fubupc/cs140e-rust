@@ -2063,7 +2063,7 @@ impl std_error::Error for CharsError {
             CharsError::Other(ref e) => std_error::Error::description(e),
         }
     }
-    fn cause(&self) -> Option<&std_error::Error> {
+    fn cause(&self) -> Option<&dyn std_error::Error> {
         match *self {
             CharsError::NotUtf8 => None,
             CharsError::Other(ref e) => e.cause(),

@@ -233,6 +233,7 @@
 
 // std may use features in a platform-specific way
 #![allow(unused_features)]
+#![allow(unused_imports)]
 
 // std is implemented with unstable features, many of which are internal
 // compiler details that will never be stable

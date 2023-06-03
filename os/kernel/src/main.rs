@@ -5,6 +5,7 @@
 #![feature(panic_info_message)]
 #![no_std]
 #![no_main]
+#![allow(unused)]
 
 pub mod allocator;
 pub mod console;

@@ -8,7 +8,7 @@
 // option. This file may not be copied, modified, or distributed
 // except according to those terms.
 
-#[doc(primitive = "bool")]
+#[rustc_doc_primitive = "bool"]
 //
 /// The boolean type.
 ///
@@ -67,7 +67,7 @@
 #[stable(feature = "rust1", since = "1.0.0")]
 mod prim_bool { }
 
-#[doc(primitive = "never")]
+#[rustc_doc_primitive = "never"]
 //
 /// The `!` type, also called "never".
 ///
@@ -195,7 +195,7 @@ mod prim_bool { }
 #[unstable(feature = "never_type", issue = "35121")]
 mod prim_never { }
 
-#[doc(primitive = "char")]
+#[rustc_doc_primitive = "char"]
 //
 /// A character type.
 ///
@@ -271,7 +271,7 @@ mod prim_never { }
 #[stable(feature = "rust1", since = "1.0.0")]
 mod prim_char { }
 
-#[doc(primitive = "unit")]
+#[rustc_doc_primitive = "unit"]
 //
 /// The `()` type, sometimes called "unit" or "nil".
 ///
@@ -309,7 +309,7 @@ mod prim_char { }
 #[stable(feature = "rust1", since = "1.0.0")]
 mod prim_unit { }
 
-#[doc(primitive = "pointer")]
+#[rustc_doc_primitive = "pointer"]
 //
 /// Raw, unsafe pointers, `*const T`, and `*mut T`.
 ///
@@ -398,7 +398,7 @@ mod prim_unit { }
 #[stable(feature = "rust1", since = "1.0.0")]
 mod prim_pointer { }
 
-#[doc(primitive = "array")]
+#[rustc_doc_primitive = "array"]
 //
 /// A fixed-size array, denoted `[T; N]`, for the element type, `T`, and the
 /// non-negative compile-time constant size, `N`.
@@ -499,7 +499,7 @@ mod prim_pointer { }
 #[stable(feature = "rust1", since = "1.0.0")]
 mod prim_array { }
 
-#[doc(primitive = "slice")]
+#[rustc_doc_primitive = "slice"]
 //
 /// A dynamically-sized view into a contiguous sequence, `[T]`.
 ///
@@ -530,7 +530,7 @@ mod prim_array { }
 #[stable(feature = "rust1", since = "1.0.0")]
 mod prim_slice { }
 
-#[doc(primitive = "str")]
+#[rustc_doc_primitive = "str"]
 //
 /// String slices.
 ///
@@ -597,7 +597,7 @@ mod prim_slice { }
 #[stable(feature = "rust1", since = "1.0.0")]
 mod prim_str { }
 
-#[doc(primitive = "tuple")]
+#[rustc_doc_primitive = "tuple"]
 //
 /// A finite heterogeneous sequence, `(T, U, ..)`.
 ///
@@ -698,7 +698,7 @@ mod prim_str { }
 #[stable(feature = "rust1", since = "1.0.0")]
 mod prim_tuple { }
 
-#[doc(primitive = "f32")]
+#[rustc_doc_primitive = "f32"]
 /// The 32-bit floating point type.
 ///
 /// *[See also the `std::f32` module](f32/index.html).*
@@ -706,7 +706,7 @@ mod prim_tuple { }
 #[stable(feature = "rust1", since = "1.0.0")]
 mod prim_f32 { }
 
-#[doc(primitive = "f64")]
+#[rustc_doc_primitive = "f64"]
 //
 /// The 64-bit floating point type.
 ///
@@ -715,7 +715,7 @@ mod prim_f32 { }
 #[stable(feature = "rust1", since = "1.0.0")]
 mod prim_f64 { }
 
-#[doc(primitive = "i8")]
+#[rustc_doc_primitive = "i8"]
 //
 /// The 8-bit signed integer type.
 ///
@@ -727,7 +727,7 @@ mod prim_f64 { }
 #[stable(feature = "rust1", since = "1.0.0")]
 mod prim_i8 { }
 
-#[doc(primitive = "i16")]
+#[rustc_doc_primitive = "i16"]
 //
 /// The 16-bit signed integer type.
 ///
@@ -739,7 +739,7 @@ mod prim_i8 { }
 #[stable(feature = "rust1", since = "1.0.0")]
 mod prim_i16 { }
 
-#[doc(primitive = "i32")]
+#[rustc_doc_primitive = "i32"]
 //
 /// The 32-bit signed integer type.
 ///
@@ -751,7 +751,7 @@ mod prim_i16 { }
 #[stable(feature = "rust1", since = "1.0.0")]
 mod prim_i32 { }
 
-#[doc(primitive = "i64")]
+#[rustc_doc_primitive = "i64"]
 //
 /// The 64-bit signed integer type.
 ///
@@ -763,7 +763,7 @@ mod prim_i32 { }
 #[stable(feature = "rust1", since = "1.0.0")]
 mod prim_i64 { }
 
-#[doc(primitive = "i128")]
+#[rustc_doc_primitive = "i128"]
 //
 /// The 128-bit signed integer type.
 ///
@@ -775,7 +775,7 @@ mod prim_i64 { }
 #[unstable(feature = "i128", issue="35118")]
 mod prim_i128 { }
 
-#[doc(primitive = "u8")]
+#[rustc_doc_primitive = "u8"]
 //
 /// The 8-bit unsigned integer type.
 ///
@@ -787,7 +787,7 @@ mod prim_i128 { }
 #[stable(feature = "rust1", since = "1.0.0")]
 mod prim_u8 { }
 
-#[doc(primitive = "u16")]
+#[rustc_doc_primitive = "u16"]
 //
 /// The 16-bit unsigned integer type.
 ///
@@ -799,7 +799,7 @@ mod prim_u8 { }
 #[stable(feature = "rust1", since = "1.0.0")]
 mod prim_u16 { }
 
-#[doc(primitive = "u32")]
+#[rustc_doc_primitive = "u32"]
 //
 /// The 32-bit unsigned integer type.
 ///
@@ -811,7 +811,7 @@ mod prim_u16 { }
 #[stable(feature = "rust1", since = "1.0.0")]
 mod prim_u32 { }
 
-#[doc(primitive = "u64")]
+#[rustc_doc_primitive = "u64"]
 //
 /// The 64-bit unsigned integer type.
 ///
@@ -823,7 +823,7 @@ mod prim_u32 { }
 #[stable(feature = "rust1", since = "1.0.0")]
 mod prim_u64 { }
 
-#[doc(primitive = "u128")]
+#[rustc_doc_primitive = "u128"]
 //
 /// The 128-bit unsigned integer type.
 ///
@@ -835,7 +835,7 @@ mod prim_u64 { }
 #[unstable(feature = "i128", issue="35118")]
 mod prim_u128 { }
 
-#[doc(primitive = "isize")]
+#[rustc_doc_primitive = "isize"]
 //
 /// The pointer-sized signed integer type.
 ///
@@ -851,7 +851,7 @@ mod prim_u128 { }
 #[stable(feature = "rust1", since = "1.0.0")]
 mod prim_isize { }
 
-#[doc(primitive = "usize")]
+#[rustc_doc_primitive = "usize"]
 //
 /// The pointer-sized unsigned integer type.
 ///
@@ -867,7 +867,7 @@ mod prim_isize { }
 #[stable(feature = "rust1", since = "1.0.0")]
 mod prim_usize { }
 
-#[doc(primitive = "reference")]
+#[rustc_doc_primitive = "reference"]
 //
 /// References, both shared and mutable.
 ///
@@ -984,7 +984,7 @@ mod prim_usize { }
 #[stable(feature = "rust1", since = "1.0.0")]
 mod prim_ref { }
 
-#[doc(primitive = "fn")]
+#[rustc_doc_primitive = "fn"]
 //
 /// Function pointers, like `fn(usize) -> bool`.
 ///
