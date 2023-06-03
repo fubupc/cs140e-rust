@@ -368,11 +368,8 @@ use prelude::v1::*;
 // #[macro_reexport(panic, assert, assert_eq, assert_ne, debug_assert, debug_assert_eq,
 //                  debug_assert_ne, unreachable, unimplemented, write, writeln, try)]
 // extern crate core as __core;
-#[stable(feature = "rust1", since = "1.0.0")]
-pub use core::{assert, assert_eq, assert_ne, debug_assert, debug_assert_eq,
-    debug_assert_ne, unreachable, unimplemented, write, writeln};
 
-// #[macro_use]
+#[macro_use]
 // #[macro_reexport(vec, format)]
 extern crate alloc;
 //- extern crate alloc_system;

@@ -55,4 +55,4 @@
 
 // More
 #[stable(feature = "rust1", since = "1.0.0")]
-#[doc(no_inline)] pub use core::prelude::v1::{derive, test, Debug, Hash};
+#[doc(no_inline)] pub use core::prelude::v1::*;
