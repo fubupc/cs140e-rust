@@ -29,6 +29,10 @@ pub static ALLOCATOR: &Allocator = &_ALLOCATOR;
 pub static FILE_SYSTEM: FileSystem = FileSystem::uninitialized();
 #[no_mangle]
 pub unsafe extern "C" fn kmain() -> ! {
-    ALLOCATOR.initialize();
+    for atag in pi::atags::Atags::get() {
+        console::kprint!("{:#?}\n", atag);
+    }
+
+    // ALLOCATOR.initialize();
     shell::shell("> ")
 }

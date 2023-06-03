@@ -1,0 +1,3 @@
+Q: What is the exact start address and size of the available memory reported by the MEM ATAG? How close is this to the Raspberry Pi’s purported 1GB or RAM?
+
+A: It reports: start: 0, size: 994050048. 994050048 bytes is 948MB which is very close to 1GB

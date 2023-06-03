@@ -1,0 +1,3 @@
+Q: We’re going through a lot of effort to expose a safe interface to unsafe data structures. You’ll see this over and over again in Rust, with the standard library as a prime example. What benefit is there to exposing safe interfaces to unsafe structures or operations in Rust? Could we yield the same benefits in a language like C?
+
+A: Exposing safe interfaces to unsafe structures or operations can maintains some kind of invariants we want. C does not provide langulage-level support to do that.
