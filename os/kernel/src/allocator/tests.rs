@@ -1,7 +1,7 @@
 mod align_util {
-    use allocator::util::{align_up, align_down};
+    use crate::allocator::util::{align_down, align_up};
 
-    #[test]
+    #[test_case]
     fn test_align_down() {
         assert_eq!(align_down(0, 2), 0);
         assert_eq!(align_down(0, 8), 0);
@@ -23,7 +23,7 @@ mod align_util {
         assert_eq!(align_down(0xAFFFF, 1 << 16), 0xA0000);
     }
 
-    #[test]
+    #[test_case]
     fn test_align_up() {
         assert_eq!(align_up(0, 2), 0);
         assert_eq!(align_up(0, 8), 0);
@@ -48,10 +48,11 @@ mod align_util {
         assert_eq!(align_up(0xABCDAB, 1 << 16), 0xAC0000);
     }
 
-    #[test] #[should_panic] fn test_panics_1() { align_down(0xFFFF0000, 7); }
-    #[test] #[should_panic] fn test_panics_2() { align_down(0xFFFF0000, 123); }
-    #[test] #[should_panic] fn test_panics_3() { align_up(0xFFFF0000, 7); }
-    #[test] #[should_panic] fn test_panics_4() { align_up(0xFFFF0000, 456); }
+    // `custom_test_frameworks` does not support #[should_panic] currently.
+    // #[test_case] #[should_panic] fn test_panics_1() { align_down(0xFFFF0000, 7); }
+    // #[test_case] #[should_panic] fn test_panics_2() { align_down(0xFFFF0000, 123); }
+    // #[test_case] #[should_panic] fn test_panics_3() { align_up(0xFFFF0000, 7); }
+    // #[test_case] #[should_panic] fn test_panics_4() { align_up(0xFFFF0000, 456); }
 }
 
 #[path = ""]
@@ -59,15 +60,15 @@ mod allocator {
     #[allow(dead_code)] mod bump;
     #[allow(dead_code)] mod bin;
 
-    use alloc::allocator::{AllocErr, Layout};
-    use alloc::raw_vec::RawVec;
+    use alloc::alloc::{AllocError, Layout};
+    // use alloc::raw_vec::RawVec;
 
     macro test_allocators {
-        (@$kind:ident, $name:ident, $mem:expr, |$info:pat| $block:expr) => {
-            #[test]
+        (@$kind:ident, $name:ident, $mem:expr, |$info:pat_param| $block:expr) => {
+            #[test_case]
             fn $name() {
-                let mem: RawVec<u8> = RawVec::with_capacity($mem);
-                let start = mem.ptr() as usize;
+                let mem: Vec<u8> = Vec::with_capacity($mem);
+                let start = mem.as_ptr() as usize;
                 let end = start + $mem;
 
                 let allocator = $kind::Allocator::new(start, end);
@@ -76,7 +77,7 @@ mod allocator {
             }
         },
 
-        ($bin:ident, $bump:ident, $mem:expr, |$info:pat| $block:expr) => (
+        ($bin:ident, $bump:ident, $mem:expr, |$info:pat_param| $block:expr) => (
             test_allocators!(@bin, $bin, $mem, |$info| $block);
             test_allocators!(@bump, $bump, $mem, |$info| $block);
         )
@@ -119,7 +120,7 @@ mod allocator {
 
     test_allocators!(bin_exhausted, bump_exhausted, 128, |(_, _, mut a)| {
         let e = a.alloc(layout!(1024, 128)).unwrap_err();
-        assert_eq!(e, AllocErr::Exhausted { request: layout!(1024, 128) })
+        assert_eq!(e, AllocError)
     });
 
     test_allocators!(bin_alloc, bump_alloc, 8 * (1 << 20), |(start, end, a)| {
@@ -246,9 +247,9 @@ mod allocator {
 }
 
 mod linked_list {
-    use allocator::linked_list::LinkedList;
+    use crate::allocator::linked_list::LinkedList;
 
-    #[test]
+    #[test_case]
     fn example_1() {
         let address_1 = (&mut (1 as usize)) as *mut usize;
         let address_2 = (&mut (2 as usize)) as *mut usize;
@@ -265,7 +266,7 @@ mod linked_list {
         assert_eq!(list.pop(), None);
     }
 
-    #[test]
+    #[test_case]
     fn example_2() {
         let address_1 = (&mut (1 as usize)) as *mut usize;
         let address_2 = (&mut (2 as usize)) as *mut usize;
@@ -289,7 +290,7 @@ mod linked_list {
         assert_eq!(list.pop(), None);
     }
 
-    #[test]
+    #[test_case]
     fn example_3() {
         let address_1 = (&mut (1 as usize)) as *mut usize;
         let address_2 = (&mut (2 as usize)) as *mut usize;

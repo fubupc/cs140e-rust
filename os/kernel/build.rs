@@ -7,4 +7,6 @@ pub fn main() {
 
     println!("cargo:rerun-if-changed=ext/layout.ld");
     println!("cargo:rerun-if-changed=ext/init.S");
+
+    println!("cargo:rustc-link-arg=-Text/layout.ld");
 }

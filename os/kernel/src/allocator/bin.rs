@@ -1,8 +1,8 @@
 use std::fmt;
-use alloc::heap::{AllocErr, Layout};
+use alloc::alloc::{AllocError, Layout};
 
-use allocator::util::*;
-use allocator::linked_list::LinkedList;
+use crate::allocator::util::*;
+use crate::allocator::linked_list::LinkedList;
 
 /// A simple allocator that allocates based on size classes.
 pub struct Allocator {
@@ -36,7 +36,7 @@ impl Allocator {
     /// Returning `Err` indicates that either memory is exhausted
     /// (`AllocError::Exhausted`) or `layout` does not meet this allocator's
     /// size or alignment constraints (`AllocError::Unsupported`).
-    pub fn alloc(&mut self, layout: Layout) -> Result<*mut u8, AllocErr> {
+    pub fn alloc(&mut self, layout: Layout) -> Result<*mut u8, AllocError> {
         unimplemented!("bin allocation")
     }
 

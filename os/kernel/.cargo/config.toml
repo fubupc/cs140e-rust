@@ -1,7 +1,8 @@
 [build]
 target = "aarch64-unknown-none"
-rustflags = ["-C", "link-arg=-Text/layout.ld"]
 
-[unstable]
-# build-std = ["std", "panic_abort"]
+# `build-std` is not necessary if the pre-compiled standary libraries for `aarch64-unknown-none` 
+# are installed: `rustup target add aarch64-unknown-none`
+# [unstable]
+# build-std = ["core", "alloc", "test"]
 # build-std-features = ["compiler-builtins-mem"]
