@@ -6,20 +6,11 @@
 ///
 /// Panics if `align` is not a power of 2.
 pub fn align_down(addr: usize, align: usize) -> usize {
-    if align == 0 {
-        panic!("align_down: align 0 is not a power of 2");
-    }
-    let mut align = align;
-    let mut power: usize = 0;
-    while align != 1 {
-        if align & 0x1 == 1 {
-            panic!("align_down: align {} is not a power of 2", align);
-        }
-        align = align >> 1;
-        power += 1;
+    if !align.is_power_of_two() {
+        panic!("align_down: align {} is not a power of 2", align);
     }
 
-    addr >> power << power
+    addr & !(align - 1)
 }
 
 /// Align `addr` upwards to the nearest multiple of `align`.
@@ -30,10 +21,7 @@ pub fn align_down(addr: usize, align: usize) -> usize {
 ///
 /// Panics if `align` is not a power of 2.
 pub fn align_up(addr: usize, align: usize) -> usize {
-    let down = align_down(addr, align);
-    if addr == down {
-        down
-    } else {
-        down + align
-    }
+    // NOTE: If addr is big enough to close to usize::MAX, addr + align will
+    // panic with overflow.
+    align_down(addr + (align - 1), align)
 }
