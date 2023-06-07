@@ -8,7 +8,7 @@ mod imp;
 mod tests;
 
 use crate::mutex::Mutex;
-use core::alloc::{GlobalAlloc as Alloc, AllocError, Layout};
+use core::alloc::{AllocError, GlobalAlloc as Alloc, Layout};
 use std::cmp::max;
 
 /// Thread-safe (locking) wrapper around a particular memory allocator.
@@ -57,7 +57,12 @@ unsafe impl<'a> Alloc for &'a Allocator {
     /// (`AllocError::Exhausted`) or `layout` does not meet this allocator's
     /// size or alignment constraints (`AllocError::Unsupported`).
     unsafe fn alloc(&self, layout: Layout) -> *mut u8 {
-        self.0.lock().as_mut().expect("allocator uninitialized").alloc(layout).unwrap()
+        self.0
+            .lock()
+            .as_mut()
+            .expect("allocator uninitialized")
+            .alloc(layout)
+            .unwrap()
     }
 
     /// Deallocates the memory referenced by `ptr`.
@@ -74,13 +79,19 @@ unsafe impl<'a> Alloc for &'a Allocator {
     /// Parameters not meeting these conditions may result in undefined
     /// behavior.
     unsafe fn dealloc(&self, ptr: *mut u8, layout: Layout) {
-        self.0.lock().as_mut().expect("allocator uninitialized").dealloc(ptr, layout);
+        self.0
+            .lock()
+            .as_mut()
+            .expect("allocator uninitialized")
+            .dealloc(ptr, layout);
     }
 }
 
 extern "C" {
     static _end: u8;
 }
+
+use pi::atags::{Atag, Atags};
 
 /// Returns the (start address, end address) of the available memory on this
 /// system if it can be determined. If it cannot, `None` is returned.
@@ -89,5 +100,15 @@ extern "C" {
 fn memory_map() -> Option<(usize, usize)> {
     let binary_end = unsafe { (&_end as *const u8) as u32 };
 
-    unimplemented!("memory map fetch")
+    for atag in Atags::get() {
+        match atag {
+            Atag::Mem(mem) => {
+                let mem_end = mem.start + mem.size;
+                return Some((binary_end as usize, mem_end as usize));
+            }
+            _ => {}
+        }
+    }
+
+    None
 }

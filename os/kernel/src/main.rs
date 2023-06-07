@@ -55,7 +55,11 @@ pub unsafe extern "C" fn kmain() -> ! {
     #[cfg(not(test))]
     ALLOCATOR.initialize();
 
-    console::kprint!("Allocated String: {}\n", String::from("Hi"));
+    let mut v = vec![];
+    for i in 0..1000 {
+        v.push(i);
+        console::kprintln!("{:?}", v);
+    }
 
-    shell::shell("> ")
+    loop {}
 }
