@@ -62,8 +62,8 @@ impl From<&raw::Cmd> for Atag {
         while unsafe { *ptr.add(len) } != 0x00 {
             len += 1;
         }
-        let s = unsafe { std::slice::from_raw_parts(ptr, len) };
-        let s = std::str::from_utf8(s).expect("Atag::Cmd contains invalid string");
+        let s = unsafe { core::slice::from_raw_parts(ptr, len) };
+        let s = core::str::from_utf8(s).expect("Atag::Cmd contains invalid string");
 
         Atag::Cmd(s)
     }

@@ -4,7 +4,7 @@ version = "0.1.0"
 authors = ["Sergio Benitez <sb@sergio.bz>"]
 
 [dependencies]
-std = { path = "../../os/std" } # Use customized std
+custom-std = { path = "../../os/std", package = "std", optional = true } # Use customized std
 
 [dev-dependencies]
 rand = "0.4"

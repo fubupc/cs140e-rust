@@ -1,5 +1,5 @@
 #![no_std]
-#![no_main]
+#![cfg_attr(not(test), no_main)]
 #![allow(unused)]
 #![feature(decl_macro)]
 #![feature(negative_impls)]
@@ -7,15 +7,19 @@
 #![feature(lang_items)]
 #![feature(panic_info_message)]
 #![feature(prelude_import)]
-// `test` crate depends on built-in `std` so not works with #![no_std].
-// The feature "custom test frameworks" can help.
-#![feature(custom_test_frameworks)]
-#![test_runner(crate::test_runner)]
-#![reexport_test_harness_main = "test_main"]
 
-// Import our customized std
+#[cfg(all(test, feature = "custom-std"))]
+compile_error!(
+    "feature \"custom-std\" cannot be enabled when test (which depends on built-in `std`)"
+);
+
+#[cfg(not(feature = "custom-std"))]
 #[macro_use]
 extern crate std;
+#[cfg(feature = "custom-std")]
+#[macro_use]
+extern crate custom_std as std;
+
 #[prelude_import]
 use std::prelude::v1::*;
 
@@ -25,11 +29,13 @@ extern crate alloc;
 pub mod allocator;
 pub mod console;
 pub mod fs;
+#[cfg(feature = "custom-std")]
 pub mod lang_items;
 pub mod mutex;
 pub mod shell;
 
 use core::arch::global_asm;
+#[cfg(not(test))]
 global_asm!(include_str!("../ext/init.S"));
 
 #[cfg(not(test))]
@@ -46,21 +52,10 @@ pub static FILE_SYSTEM: FileSystem = FileSystem::uninitialized();
 
 #[no_mangle]
 pub unsafe extern "C" fn kmain() -> ! {
-    #[cfg(test)]
-    test_main();
+    #[cfg(not(test))]
+    ALLOCATOR.initialize();
 
-    for atag in pi::atags::Atags::get() {
-        console::kprint!("{:#?}\n", atag);
-    }
+    console::kprint!("Allocated String: {}\n", String::from("Hi"));
 
-    // ALLOCATOR.initialize();
     shell::shell("> ")
-}
-
-#[cfg(test)]
-fn test_runner(tests: &[&dyn Fn()]) {
-    console::kprintln!("Running {} tests", tests.len());
-    for test in tests {
-        test();
-    }
 }

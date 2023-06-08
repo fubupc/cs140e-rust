@@ -1,5 +1,5 @@
-[build]
-target = "aarch64-unknown-none"
+# [build]
+# target = "aarch64-unknown-none"
 
 # `build-std` is not necessary if the pre-compiled standary libraries for `aarch64-unknown-none` 
 # are installed: `rustup target add aarch64-unknown-none`

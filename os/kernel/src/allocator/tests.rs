@@ -1,7 +1,7 @@
 mod align_util {
     use crate::allocator::util::{align_down, align_up};
 
-    #[test_case]
+    #[test]
     fn test_align_down() {
         assert_eq!(align_down(0, 2), 0);
         assert_eq!(align_down(0, 8), 0);
@@ -23,7 +23,7 @@ mod align_util {
         assert_eq!(align_down(0xAFFFF, 1 << 16), 0xA0000);
     }
 
-    #[test_case]
+    #[test]
     fn test_align_up() {
         assert_eq!(align_up(0, 2), 0);
         assert_eq!(align_up(0, 8), 0);
@@ -49,10 +49,10 @@ mod align_util {
     }
 
     // `custom_test_frameworks` does not support #[should_panic] currently.
-    // #[test_case] #[should_panic] fn test_panics_1() { align_down(0xFFFF0000, 7); }
-    // #[test_case] #[should_panic] fn test_panics_2() { align_down(0xFFFF0000, 123); }
-    // #[test_case] #[should_panic] fn test_panics_3() { align_up(0xFFFF0000, 7); }
-    // #[test_case] #[should_panic] fn test_panics_4() { align_up(0xFFFF0000, 456); }
+    #[test] #[should_panic] fn test_panics_1() { align_down(0xFFFF0000, 7); }
+    #[test] #[should_panic] fn test_panics_2() { align_down(0xFFFF0000, 123); }
+    #[test] #[should_panic] fn test_panics_3() { align_up(0xFFFF0000, 7); }
+    #[test] #[should_panic] fn test_panics_4() { align_up(0xFFFF0000, 456); }
 }
 
 #[path = ""]
@@ -65,7 +65,7 @@ mod allocator {
 
     macro test_allocators {
         (@$kind:ident, $name:ident, $mem:expr, |$info:pat_param| $block:expr) => {
-            #[test_case]
+            #[test]
             fn $name() {
                 let mem: Vec<u8> = Vec::with_capacity($mem);
                 let start = mem.as_ptr() as usize;
@@ -249,7 +249,7 @@ mod allocator {
 mod linked_list {
     use crate::allocator::linked_list::LinkedList;
 
-    #[test_case]
+    #[test]
     fn example_1() {
         let address_1 = (&mut (1 as usize)) as *mut usize;
         let address_2 = (&mut (2 as usize)) as *mut usize;
@@ -266,7 +266,7 @@ mod linked_list {
         assert_eq!(list.pop(), None);
     }
 
-    #[test_case]
+    #[test]
     fn example_2() {
         let address_1 = (&mut (1 as usize)) as *mut usize;
         let address_2 = (&mut (2 as usize)) as *mut usize;
@@ -290,7 +290,7 @@ mod linked_list {
         assert_eq!(list.pop(), None);
     }
 
-    #[test_case]
+    #[test]
     fn example_3() {
         let address_1 = (&mut (1 as usize)) as *mut usize;
         let address_2 = (&mut (2 as usize)) as *mut usize;

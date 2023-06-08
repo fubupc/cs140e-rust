@@ -3,6 +3,7 @@ TARGET ?= aarch64-unknown-none
 TTYWRITE ?= ttywrite
 PI_TTY ?= /dev/ttyUSB0
 CARGO ?= cargo
+CARGO_FLAGS ?= --target aarch64-unknown-none --features custom-std
 OBJCOPY ?= rust-objcopy
 
 RUST_BINARY := $(shell cat Cargo.toml | grep name | cut -d\" -f 2 | tr - _)
@@ -28,11 +29,11 @@ install: $(KERNEL)
 
 $(RUST_DEBUG_BIN): $(RUST_DEPS)
 	@echo "+ Building $@ [cargo]"
-	@$(CARGO) build
+	@$(CARGO) build $(CARGO_FLAGS)
 
 $(RUST_RELEASE_BIN): $(RUST_DEPS)
 	@echo "+ Building $@ [cargo --release]"
-	@$(CARGO) build --release
+	@$(CARGO) build $(CARGO_FLAGS) --release
 
 ifeq ($(DEBUG),1)
 $(KERNEL): $(RUST_DEBUG_BIN) | $(BUILD_DIR)

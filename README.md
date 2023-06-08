@@ -28,49 +28,36 @@ This course uses a [customized std lib](os/std), but it still depends on some bu
     ```
 
 ### Build Kernel
+
+Before talking about build, there are 2 problems about test:
+1. Where to run test?
+   1. On local machine: This usually means run test on host target like `x86_64-unknown-linux-gnu`. However, this project is designed for `aarch64-unknown-none` so some targe specific code will not work.
+   2. On real Pi hardware (or QEMU): No previous problem but inconvinient.
+2. This project used a [customized std](os/std/) while test depends on the built-in full-featured `std` lib. Two possible solutions:
+   1. Make test not depends on built-in `std` using the [custom_test_frameworks](https://doc.rust-lang.org/unstable-book/language-features/custom-test-frameworks.html) feature: https://os.phil-opp.com/testing/. But it comes with certain limitations: cannot use `#[should_panic]`, multi-thread, `print!` (not supported by our [customized std](os/std/)) etc.
+   2. Make the code switch to use built-in `std` when testing by using `#[cfg(test)]` conditional compilation. But it means dependencies like `os/pi`, `2-fs/fat32` needs to be adjusted as well.
+
+Currently, run test on local machine + switch `std` is chosen:
+1. For `os/kernel` and its dependencies like `os/pi`, `2-fs/fat32`, introduce a `custom-std` feature to switch between customized std and built-in std.
+2. Use `#[cfg(not(test))]` for target specific code.
+
+#### Build:
 ```Shell
 cd os/kernel
-cargo build --release --target aarch64-unknown-none # For "Method 1": use pre-compiled
-# cargo build --release --target aarch64-unknown-none -Z build-std=core,alloc # For "Method 2": recompile `core`, `alloc` by ourselves
+
+# For "Method 1": use pre-compiled
+cargo build --release --target aarch64-unknown-none --features custom-std
+# For "Method 2": recompile `core`, `alloc` by ourselves
+cargo build --release --target aarch64-unknown-none --features custom-std -Z build-std=core,alloc
+
 rust-objcopy target/aarch64-unknown-none/release/kernel -O binary <overwrite kernel8.img at root directory of SD card>
 ```
 
-**NOTE**: We can save typing `--target aarch64-unknown-none`, `-Z build-std=core,alloc` manually by adding them into [cargo configuration files](os/kernel/.cargo/config.toml).
-
-### Test
-
-**NOTE**: Currently test has some limitations such as cannot run locally (on host env), no detailed error message, etc.
-
-`cargo test` depends on built-in `test` crate, which in turn depends on `std` crate. This caused some troubles to `#![no_std]` project:
-
-```Text
-error[E0463]: can't find crate for `test`
-  --> src/allocator/tests.rs:5:5
-4  |       #[test]
-   |       ------- in this procedural macro expansion
-5  | /     fn test_align_down() {
-...  |     ...
-24 | |     }
-   | |_____^ can't find crate
+#### Test:
+```Shell
+cd os/kernel
+cargo test
 ```
-
-This is because there is no pre-compiled `test` crate available for target `aarch64-unknown-none`. Even if try to recompile `test` crate using `-Z build-std=test` will still report error like:
-
-```Text
-error[E0658]: use of unstable library feature 'restricted_std'
-|
-= help: add `#![feature(restricted_std)]` to the crate attributes to enable
-```
-
-It actually makes sense because `test` needs a real `std` implementation to work, but `aarch64-unknown-none` target can only provide a *restricted std* with all functions are implemented as dummies.
-
-There are two possible solutions:
-
-- **Option 1**: Use different targets for `cargo build` and `cargo test`, e.g. use `aarch64-unknown-none` for build and `x86_64-unknown-linux-gnu` for test. However, this method requires mess up the code with conditional compilation (`#cfg(...)`) to handle target specific code, e.g. the `global_asm!`/`asm!` code is designed for `aarch64` and will not compile for the `x86_64` target. Additionally, the dependencies like `os/pi` also needs to be adjusted accordingly, otherwise `os/kernel` and `os/pi` would use different `std` libs inconsistently.
-
-- **Option 2**: Utilize the [custom_test_frameworks](https://doc.rust-lang.org/unstable-book/language-features/custom-test-frameworks.html) feature: https://os.phil-opp.com/testing/. This approach enables testing directly against `aarch64-unknown-none` target instead of *cross-test*ing. However, it comes with certain limitations, such as certain functions being unavailable in the test code, including `print!` (not supported by our [customized std](os/std/)), `#[should_panic]` etc.
-
-Currently, **Option 2** seems to be a better solution, as chosen.
 
 ## Run in `QEMU`
 QEMU can be used to emulate a Raspberry Pi 3B+:

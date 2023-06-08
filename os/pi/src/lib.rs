@@ -10,12 +10,15 @@
 #![no_std]
 #![allow(unused)]
 
-#[cfg(feature = "std")]
+#[cfg(feature = "custom-std")]
+extern crate custom_std as std;
+#[cfg(not(feature = "custom-std"))]
 extern crate std;
+
 extern crate volatile;
 
+pub mod atags;
+pub mod common;
+pub mod gpio;
 pub mod timer;
 pub mod uart;
-pub mod gpio;
-pub mod common;
-pub mod atags;

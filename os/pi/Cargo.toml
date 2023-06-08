@@ -4,8 +4,7 @@ version = "0.1.0"
 authors = ["Sergio Benitez <sb@sergio.bz>"]
 
 [dependencies]
-std = { path = "../std" } # Use customized std
+custom-std = { path = "../std", package = "std", optional = true } # Use customized std
 volatile = { path = "../volatile" }
 
 [features]
-std = []

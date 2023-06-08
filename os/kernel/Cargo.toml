@@ -16,13 +16,16 @@ debug = true
 panic = "abort"
 lto = true
 
-[dependencies]
-std = { path = "../std" } # Use customized std
 
-pi = { path = "../pi", features = ["std"] }
+[dependencies]
+custom-std = { path = "../std", package = "std", optional = true } # Use customized std
+
+pi = { path = "../pi", default-features = false }
 
 # from assignment 1
 stack-vec = { path = "../../1-shell/stack-vec/" }
 
-# from assignment 2
-fat32 = { path = "../../2-fs/fat32/" }
+fat32 = { path = "../../2-fs/fat32/", default-features = false } # from assignment 2
+
+[features]
+custom-std = ["dep:custom-std", "pi/custom-std", "fat32/custom-std"]

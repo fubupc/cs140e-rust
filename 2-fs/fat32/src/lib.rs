@@ -4,7 +4,13 @@
 #![no_std]
 #![allow(unused)]
 
+#[cfg(feature = "custom-std")]
+#[macro_use]
+extern crate custom_std as std;
+#[cfg(not(feature = "custom-std"))]
+#[macro_use]
 extern crate std;
+
 #[prelude_import]
 #[allow(unused)]
 use std::prelude::v1::*;
