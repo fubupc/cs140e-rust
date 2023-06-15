@@ -1,0 +1,3 @@
+Q: Using an intrusive linked list for our memory allocators turns out to be a very convenient decision. What issues would arise if we had instead decided to use a regular, allocate-additional-memory-on-push, linked list?
+
+A: Use a regular, allocate-additional-memory-on-push, linked list needs a memory allocator at the first place.

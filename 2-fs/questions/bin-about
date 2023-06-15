@@ -1,0 +1,10 @@
+Q: Briefly explain the design of your allocator. In particular answer the following questions:
+
+Which size classes did you choose and why?
+How does your allocator handle alignment?
+What are the bounds on internal and external fragmentation for your design choices?
+
+A:
+1. Chosen size classes: 8, 16, 32, ..., 65536. Easy to split big block into smaller ones, and merge in the reverse.
+2.  Make bin block align with its block size. So if a block can accommodate a layout then it must also align with that layout.
+3.  Internal fragmentation is always below 50%. But currently max external fragmentation may reach to 100%. 

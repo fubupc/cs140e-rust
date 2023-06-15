@@ -1,0 +1,5 @@
+Q: Your allocator probably creates more fragmentation that it needs to, and that’s okay! How could you do better? Sketch (only in writing) two brief design ideas for improving your allocator’s fragmentation.
+
+A:
+1. Put bin blocks back into pool when it beyond some threshold.
+2. Merge smaller bin blocks into bigger ones when necessary.

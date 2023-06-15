@@ -1,4 +1,5 @@
 mod linked_list;
+mod pool;
 mod util;
 
 #[path = "bump.rs"]
