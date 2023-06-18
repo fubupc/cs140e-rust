@@ -1,0 +1,3 @@
+Q: The first sector of a disk may not necessarily contain an MBR. How would you determine if the first sector contains a valid MBR?
+
+A: Check if the 2 bytes at offset 510 is (0x55, 0xAA) signature. 

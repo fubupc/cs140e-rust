@@ -1,0 +1,3 @@
+Q: Is there a limit to the size of a file? If so, what is the maximum size, in bytes, of a file, and what determines it?
+
+A: Maximum size of a file, in bytes, is 2^32 = 4G. This limit is a concequence of the 4-byte file length field in regular directory entry.

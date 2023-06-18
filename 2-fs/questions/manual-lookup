@@ -1,0 +1,8 @@
+Q: Given an EBPB, describe the series of steps you would take to find the starting cluster for the file /a/b/c.txt.
+
+A: Follow these steps:
+1. Read the 44th byte of EBPB to get the cluster number of the root directory.
+2. Follow the cluster number, read the content (i.e. `/`) to find the matching regular directory entry with file name `a`.
+3. Follow the matching entry's first cluster number, read the content (i.e. `/a`) to find the matching entry with file name `b`.
+4. Follow the matching entry's first cluster number, read the content (i.e. `/a/b`) to find the matching entry with file name `c.txt`.
+5. Return the matching entry's first cluster number, i.e. the staring cluster for the file `/a/b/c.txt`.
