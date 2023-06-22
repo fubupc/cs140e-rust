@@ -127,13 +127,11 @@ impl VFat {
         let mut total = 0;
 
         loop {
-            if buf.capacity() - buf.len() < self.cluster_size() {
-                buf.reserve_exact(self.cluster_size() - (buf.capacity() - buf.len()));
-                assert!(buf.capacity() - buf.len() >= self.cluster_size());
-            }
+            buf.resize(buf.len() + self.cluster_size(), 0x00);
+            assert!(buf.len() >= init_len + total + self.cluster_size());
 
             let n = self.read_cluster(curr, 0, &mut buf[init_len + total..])?;
-            assert!(n == self.cluster_size());
+            assert_eq!(n, self.cluster_size());
             total += n;
 
             match self.fat_entry(curr)?.status() {
