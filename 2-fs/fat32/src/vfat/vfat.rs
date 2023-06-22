@@ -67,8 +67,9 @@ impl VFat {
             bytes_per_sector: bpb.bytes_per_sector,
             sectors_per_cluster: bpb.sectors_per_cluster,
             sectors_per_fat: bpb.sectors_per_fat_32,
-            fat_start_sector: bpb.reserved_sectors as u64,
-            data_start_sector: bpb.reserved_sectors as u64
+            fat_start_sector: pe.relative_sector as u64 + bpb.reserved_sectors as u64,
+            data_start_sector: pe.relative_sector as u64
+                + bpb.reserved_sectors as u64
                 + bpb.number_of_fats as u64 * bpb.sectors_per_fat_32 as u64,
             root_dir_cluster: Cluster::from(bpb.root_dir_cluster),
         }))
