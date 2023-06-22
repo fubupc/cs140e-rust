@@ -31,6 +31,10 @@ pub struct Time(u16);
 // The time that the file was created. Multiply Seconds by 2.
 // Bits 15 - 11: hours. Bits 10 -5: minutes. Bits 4 - 0: seconds/2.
 impl Time {
+    pub fn zero() -> Time {
+        Time(0)
+    }
+
     pub fn hour(&self) -> u8 {
         (self.0 >> 11 & 0x1F) as u8
     }
@@ -39,6 +43,7 @@ impl Time {
         (self.0 >> 5 & 0x3F) as u8
     }
 
+    // NOTE: The granularity is 2 seconds.
     pub fn second(&self) -> u8 {
         (self.0 & 0x1F) as u8 * 2
     }
@@ -89,6 +94,7 @@ impl Attributes {
 pub struct Timestamp {
     pub date: Date,
     pub time: Time,
+    pub addtional_in_10ms: u8, // addtional time with 10ms granularity, range: [0, 199)
 }
 
 /// Metadata for a directory entry.
@@ -124,7 +130,9 @@ impl traits::Timestamp for Timestamp {
     }
 
     fn second(&self) -> u8 {
-        self.time.second()
+        // additional time, range: [0, 2] seconds
+        let add = (self.addtional_in_10ms as f64 / 100.0).round() as u8;
+        self.time.second() + add
     }
 }
 
@@ -155,14 +163,16 @@ impl traits::Metadata for Metadata {
 
 impl fmt::Display for Timestamp {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        use traits::Timestamp;
+
         f.write_fmt(format_args!(
-            "{:>4}-{:02}-{:02} {:02}-{:02}-{:02}",
-            self.date.year(),
-            self.date.month(),
-            self.date.day(),
-            self.time.hour(),
-            self.time.minute(),
-            self.time.second()
+            "{:>4}-{:02}-{:02}T{:02}:{:02}:{:02}",
+            self.year(),
+            self.month(),
+            self.day(),
+            self.hour(),
+            self.minute(),
+            self.second()
         ))
     }
 }

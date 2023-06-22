@@ -1,8 +1,8 @@
-use std::cmp::{min, max};
+use std::cmp::{max, min};
 use std::io::{self, SeekFrom};
 
 use traits;
-use vfat::{VFat, Shared, Cluster, Metadata};
+use vfat::{Cluster, Metadata, Shared, VFat};
 
 #[derive(Debug)]
 pub struct File {
@@ -10,6 +10,31 @@ pub struct File {
 }
 
 // FIXME: Implement `traits::File` (and its supertraits) for `File`.
+impl traits::File for File {
+    fn sync(&mut self) -> io::Result<()> {
+        todo!()
+    }
+
+    fn size(&self) -> u64 {
+        todo!()
+    }
+}
+
+impl io::Read for File {
+    fn read(&mut self, buf: &mut [u8]) -> io::Result<usize> {
+        todo!()
+    }
+}
+
+impl io::Write for File {
+    fn write(&mut self, buf: &[u8]) -> io::Result<usize> {
+        todo!()
+    }
+
+    fn flush(&mut self) -> io::Result<()> {
+        todo!()
+    }
+}
 
 impl io::Seek for File {
     /// Seek to offset `pos` in the file.
