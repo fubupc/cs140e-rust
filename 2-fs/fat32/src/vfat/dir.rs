@@ -10,8 +10,8 @@ use vfat::{Cluster, Entry, File, Shared, VFat};
 
 #[derive(Debug)]
 pub struct Dir {
-    pub long_name: Option<String>,
-    pub short_name: String,
+    pub(super) long_name: Option<String>,
+    pub(super) short_name: String,
     pub metadata: Metadata,
 
     pub(super) start_cluster: Cluster,
@@ -186,6 +186,16 @@ pub union VFatDirEntry {
 }
 
 impl Dir {
+    pub fn root(root_dir_cluster: Cluster, vfat: Shared<VFat>) -> Dir {
+        Dir {
+            long_name: None,
+            short_name: String::from("/"),
+            metadata: super::Metadata::default(),
+            start_cluster: root_dir_cluster,
+            vfat,
+        }
+    }
+
     /// Finds the entry named `name` in `self` and returns it. Comparison is
     /// case-insensitive.
     ///
@@ -207,6 +217,10 @@ impl Dir {
         self.entries()?
             .find(|e| e.name().eq_ignore_ascii_case(name))
             .ok_or(io::ErrorKind::NotFound.into())
+    }
+
+    pub fn name(&self) -> &str {
+        self.long_name.as_ref().unwrap_or(&self.short_name)
     }
 }
 
@@ -268,7 +282,17 @@ impl Iterator for EntryIter {
                             vfat: self.vfat.clone(),
                         }));
                     } else {
-                        return Some(Entry::File(File {}));
+                        return Some(Entry::File(File {
+                            long_name,
+                            short_name: regular.name().unwrap(),
+                            metadata: regular.metadata(),
+                            file_size: regular.file_size,
+
+                            vfat: self.vfat.clone(),
+                            absolute_offset: 0,
+                            start_cluster: regular.first_cluster(),
+                            curr_cluster: regular.first_cluster(),
+                        }));
                     }
                 }
             }

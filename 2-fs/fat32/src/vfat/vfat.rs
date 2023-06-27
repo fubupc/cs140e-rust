@@ -161,7 +161,7 @@ impl VFat {
         Ok(entry)
     }
 
-    fn cluster_size(&self) -> usize {
+    pub fn cluster_size(&self) -> usize {
         self.sectors_per_cluster as usize * self.bytes_per_sector as usize
     }
 

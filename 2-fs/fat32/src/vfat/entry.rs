@@ -19,42 +19,42 @@ impl traits::Entry for Entry {
 
     fn name(&self) -> &str {
         match self {
-            Entry::File(_) => todo!(),
-            Entry::Dir(dir) => dir.long_name.as_ref().unwrap_or(&dir.short_name),
+            Entry::File(file) => file.name(),
+            Entry::Dir(dir) => dir.name(),
         }
     }
 
     fn metadata(&self) -> &Self::Metadata {
         match self {
-            Entry::File(_) => todo!(),
+            Entry::File(file) => &file.metadata,
             Entry::Dir(dir) => &dir.metadata,
         }
     }
 
     fn as_file(&self) -> Option<&File> {
         match self {
-            Entry::File(_) => todo!(),
+            Entry::File(file) => Some(file),
             Entry::Dir(_) => None,
         }
     }
 
     fn as_dir(&self) -> Option<&Dir> {
         match self {
-            Entry::File(_) => todo!(),
+            Entry::File(_) => None,
             Entry::Dir(dir) => Some(dir),
         }
     }
 
     fn into_file(self) -> Option<File> {
         match self {
-            Entry::File(_) => todo!(),
+            Entry::File(file) => Some(file),
             Entry::Dir(_) => None,
         }
     }
 
     fn into_dir(self) -> Option<Dir> {
         match self {
-            Entry::File(_) => todo!(),
+            Entry::File(_) => None,
             Entry::Dir(dir) => Some(dir),
         }
     }
