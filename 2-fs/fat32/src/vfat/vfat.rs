@@ -2,7 +2,7 @@ use core::convert::TryInto;
 use std::cmp::min;
 use std::io::{self, Read, Write};
 use std::mem::size_of;
-use std::path::Path;
+use std::path::{Component, Path};
 
 use mbr::MasterBootRecord;
 use traits::{BlockDevice, FileSystem};
@@ -97,7 +97,7 @@ impl VFat {
                 let mut buf = buf;
                 for i in sector_offset as u64..self.sectors_per_cluster as u64 {
                     let mut sector = self.device.get(start_sector + i)?;
-                    let n = if i == 0 {
+                    let n = if i == sector_offset as u64 {
                         (&sector[offset_in_sector..]).read(buf)?
                     } else {
                         sector.read(buf)?
@@ -171,12 +171,63 @@ impl VFat {
 }
 
 impl<'a> FileSystem for &'a Shared<VFat> {
-    type File = ::traits::Dummy;
-    type Dir = ::traits::Dummy;
-    type Entry = ::traits::Dummy;
+    type File = File;
+    type Dir = Dir;
+    type Entry = Entry;
 
     fn open<P: AsRef<Path>>(self, path: P) -> io::Result<Self::Entry> {
-        unimplemented!("FileSystem::open()")
+        let root = Entry::Dir(Dir::root(self.borrow().root_dir_cluster, self.clone()));
+
+        match path.as_ref().components().collect::<Vec<_>>().as_slice() {
+            [] => Err(io::Error::new(
+                io::ErrorKind::InvalidInput,
+                "invalid path: empty",
+            )),
+            [first, lasts @ ..] => {
+                if first != &Component::RootDir {
+                    return Err(io::Error::new(
+                        io::ErrorKind::InvalidInput,
+                        format!("invalid path: not an absolute path: {:?}", path.as_ref()),
+                    ));
+                }
+
+                let mut parents = vec![root];
+                // Loop invariant: `parents` contains at least one element (the root dir)
+                for c in lasts {
+                    match c {
+                        Component::Prefix(_) => return Err(io::ErrorKind::Unsupported.into()),
+                        Component::RootDir => {
+                            panic!("[bug] root dir should not be in the middle of path")
+                        }
+                        Component::CurDir => continue, // Dir '.'
+                        Component::ParentDir => {
+                            // Dir '..'
+                            if parents.len() == 1 {
+                                return Err(io::Error::new(
+                                    io::ErrorKind::InvalidInput,
+                                    "invalid path: beyond root directory",
+                                ));
+                            }
+                            parents.pop().unwrap();
+                        }
+                        Component::Normal(c) => {
+                            let entry = match parents.last().unwrap() {
+                                Entry::Dir(dir) => dir.find(c)?,
+                                Entry::File(_) => {
+                                    return Err(io::Error::new(
+                                        io::ErrorKind::InvalidInput,
+                                        "invalid path: not directory",
+                                    ))
+                                }
+                            };
+                            parents.push(entry);
+                        }
+                    }
+                }
+
+                Ok(parents.pop().unwrap())
+            }
+        }
     }
 
     fn create_file<P: AsRef<Path>>(self, _path: P) -> io::Result<Self::File> {
