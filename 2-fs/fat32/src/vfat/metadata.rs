@@ -1,3 +1,4 @@
+use core::cmp::min;
 use std::fmt;
 
 use traits;
@@ -131,8 +132,8 @@ impl traits::Timestamp for Timestamp {
 
     fn second(&self) -> u8 {
         // additional time, range: [0, 2] seconds
-        let add = (self.addtional_in_10ms as f64 / 100.0).round() as u8;
-        self.time.second() + add
+        let add = (self.addtional_in_10ms as f64 / 100.0 + 0.5) as u8;
+        self.time.second() + min(59, add)
     }
 }
 
