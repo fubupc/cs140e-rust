@@ -11,6 +11,9 @@ extern crate custom_std as std;
 #[macro_use]
 extern crate std;
 
+#[macro_use]
+extern crate alloc;
+
 #[prelude_import]
 #[allow(unused)]
 use std::prelude::v1::*;
