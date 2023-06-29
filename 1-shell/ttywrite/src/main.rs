@@ -3,10 +3,13 @@ extern crate structopt;
 extern crate xmodem;
 #[macro_use]
 extern crate structopt_derive;
+#[macro_use]
+extern crate crossterm;
 
-use std::path::PathBuf;
 use std::time::Duration;
+use std::{io::stdout, path::PathBuf};
 
+use crossterm::{cursor, execute, style, terminal};
 use serial::core::{BaudRate, CharSize, FlowControl, SerialDevice, SerialPortSettings, StopBits};
 use structopt::StructOpt;
 use xmodem::{Progress, Xmodem};
@@ -107,10 +110,17 @@ fn main() {
         io::copy(input.as_mut(), &mut serial).unwrap()
     } else {
         fn progress_fn(progress: Progress) {
-            println!("Progress: {:?}", progress);
+            let mut stdout = stdout();
+            execute!(
+                stdout,
+                cursor::MoveToColumn(0),
+                terminal::Clear(terminal::ClearType::CurrentLine),
+                style::Print(format!("Progress: {:?}", progress))
+            )
+            .unwrap();
         }
         Xmodem::transmit_with_progress(input, serial, progress_fn).unwrap() as u64
     };
 
-    println!("sent {total} bytes");
+    println!("\nSent {total} bytes");
 }
