@@ -195,7 +195,7 @@ impl<'a> FileSystem for &'a Shared<VFat> {
                 // Loop invariant: `parents` contains at least one element (the root dir)
                 for c in lasts {
                     match c {
-                        Component::Prefix(_) => return Err(io::ErrorKind::Unsupported.into()),
+                        Component::Prefix(_) => return Err(io::ErrorKind::InvalidInput.into()),
                         Component::RootDir => {
                             panic!("[bug] root dir should not be in the middle of path")
                         }
