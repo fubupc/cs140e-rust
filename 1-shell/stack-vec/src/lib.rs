@@ -3,6 +3,10 @@
 #[cfg(test)]
 mod tests;
 
+use core::iter::IntoIterator;
+use core::ops::{Deref, DerefMut};
+use core::slice;
+
 /// A contiguous array type backed by a slice.
 ///
 /// `StackVec`'s functionality is similar to that of `std::Vec`. You can `push`
@@ -100,10 +104,6 @@ impl<'a, T: 'a> StackVec<'a, T> {
             Ok(())
         }
     }
-
-    pub fn iter(&'a self) -> core::slice::Iter<'a, T> {
-        self.storage[0..self.len].iter()
-    }
 }
 
 impl<'a, T: Clone + 'a> StackVec<'a, T> {
@@ -121,42 +121,34 @@ impl<'a, T: Clone + 'a> StackVec<'a, T> {
 }
 
 // FIXME: Implement `Deref`, `DerefMut`, and `IntoIterator` for `StackVec`.
-// FIXME: Implement IntoIterator` for `&StackVec`.
-
-impl<'a, T> IntoIterator for StackVec<'a, T> {
-    type Item = &'a T;
-    type IntoIter = core::slice::Iter<'a, T>;
-
-    fn into_iter(self) -> Self::IntoIter {
-        self.storage[0..self.len].into_iter()
+impl<'a, T> Deref for StackVec<'a, T> {
+    type Target = [T];
+    fn deref(&self) -> &Self::Target {
+        self.as_slice()
     }
 }
 
+impl<'a, T> DerefMut for StackVec<'a, T> {
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        self.as_mut_slice()
+    }
+}
+
+impl<'a, T> IntoIterator for StackVec<'a, T> {
+    type Item = &'a mut T;
+    type IntoIter = slice::IterMut<'a, T>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        self.into_slice().into_iter()
+    }
+}
+
+// FIXME: Implement IntoIterator` for `&StackVec`.
 impl<'a: 'b, 'b, T> IntoIterator for &'b StackVec<'a, T> {
     type Item = &'b T;
     type IntoIter = core::slice::Iter<'b, T>;
 
     fn into_iter(self) -> Self::IntoIter {
         self.iter()
-    }
-}
-
-impl<'a, T> core::ops::Index<usize> for StackVec<'a, T> {
-    type Output = T;
-
-    fn index(&self, index: usize) -> &Self::Output {
-        if index >= self.len {
-            panic!("index out of bound")
-        }
-        &self.storage[index]
-    }
-}
-
-impl<'a, T> core::ops::IndexMut<usize> for StackVec<'a, T> {
-    fn index_mut(&mut self, index: usize) -> &mut Self::Output {
-        if index >= self.len {
-            panic!("index out of bound")
-        }
-        &mut self.storage[index]
     }
 }
