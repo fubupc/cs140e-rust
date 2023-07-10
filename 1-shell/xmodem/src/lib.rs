@@ -1,4 +1,16 @@
-#![cfg_attr(target_arch = "aarch64", feature(restricted_std))]
+#![no_std]
+
+#[cfg(not(feature = "custom-std"))]
+#[allow(unused_imports)]
+#[macro_use]
+extern crate std;
+#[cfg(feature = "custom-std")]
+#[allow(unused_imports)]
+#[macro_use]
+extern crate custom_std as std;
+
+// re-add std/custom-std prelude
+use std::prelude::v1::*;
 
 use std::io;
 
