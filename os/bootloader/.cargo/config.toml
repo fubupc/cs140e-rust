@@ -2,6 +2,6 @@
 target = "aarch64-unknown-none"
 rustflags = ["-C", "link-arg=-Text/layout.ld"]
 
-[unstable]
-build-std = ["std", "panic_abort"]
-build-std-features = ["compiler-builtins-mem"]
+# [unstable]
+# build-std = ["std", "panic_abort"]
+# build-std-features = ["compiler-builtins-mem"]

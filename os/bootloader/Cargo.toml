@@ -17,7 +17,9 @@ panic = "abort"
 lto = true
 
 [dependencies]
-pi = { path = "../pi", features = ["std"] }
+custom-std = { path = "../std", package = "std" }
+
+pi = { path = "../pi", features = ["custom-std"] }
 
 # from assignment 1
-xmodem = { path = "../../1-shell/xmodem/" }
+xmodem = { path = "../../1-shell/xmodem/", features = ["custom-std"] }

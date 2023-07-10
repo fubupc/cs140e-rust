@@ -1,11 +1,28 @@
-#![feature(restricted_std)]
+#![feature(lang_items)]
+#![feature(prelude_import)]
+#![no_std]
 #![no_main]
+
+#[allow(unused_imports)]
+#[macro_use]
+extern crate custom_std as std;
+
+#[allow(unused_imports)]
+#[prelude_import]
+use std::prelude::v1::*;
+
+// #[macro_use]
+// extern crate alloc;
+
+mod lang_items;
 
 use pi;
 use xmodem;
 
-use core::arch::{asm, global_asm};
-use std::fmt::Write;
+use core::{
+    arch::{asm, global_asm},
+    fmt::Write,
+};
 global_asm!(include_str!("../ext/init.S"));
 
 /// Start address of the binary to load and of the bootloader.
@@ -40,7 +57,7 @@ pub extern "C" fn kmain() {
             .unwrap();
         pi::timer::spin_sleep_ms(5000);
 
-        let buf = unsafe { std::slice::from_raw_parts_mut(BINARY_START, MAX_BINARY_SIZE) };
+        let buf = unsafe { core::slice::from_raw_parts_mut(BINARY_START, MAX_BINARY_SIZE) };
 
         match xmodem::Xmodem::receive(&mut uart, buf) {
             Ok(_) => {
