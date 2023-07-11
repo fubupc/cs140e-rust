@@ -14,7 +14,7 @@ RUST_RELEASE_BIN := $(RUST_BUILD_DIR)/release/$(RUST_BINARY)
 BUILD_DIR := build
 KERNEL := $(BUILD_DIR)/$(RUST_BINARY).bin
 
-.PHONY: all test clean check install
+.PHONY: all test clean check install $(RUST_DEBUG_BIN) $(RUST_RELEASE_BIN)
 
 all: $(KERNEL)
 
@@ -27,11 +27,11 @@ test:
 install: $(KERNEL)
 	$(TTYWRITE) -i $< $(PI_TTY)
 
-$(RUST_DEBUG_BIN): $(RUST_DEPS)
+$(RUST_DEBUG_BIN):
 	@echo "+ Building $@ [cargo]"
 	@$(CARGO) build $(CARGO_FLAGS)
 
-$(RUST_RELEASE_BIN): $(RUST_DEPS)
+$(RUST_RELEASE_BIN):
 	@echo "+ Building $@ [cargo --release]"
 	@$(CARGO) build $(CARGO_FLAGS) --release
 
