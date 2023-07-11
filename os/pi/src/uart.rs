@@ -3,9 +3,9 @@ use core::fmt;
 use volatile::prelude::*;
 use volatile::{ReadVolatile, Reserved, Volatile};
 
-use common::IO_BASE;
-use gpio::{Function, Gpio};
-use timer;
+use crate::common::IO_BASE;
+use crate::gpio::{Function, Gpio};
+use crate::timer;
 
 /// The base address for the `MU` registers.
 const MU_REG_BASE: usize = IO_BASE + 0x215040;

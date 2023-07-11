@@ -1,6 +1,6 @@
-use atags::raw;
+use super::raw;
 
-pub use atags::raw::{Core, Mem};
+pub use super::raw::{Core, Mem};
 
 /// An ATAG.
 #[derive(Debug, Copy, Clone)]

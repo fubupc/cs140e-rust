@@ -2,6 +2,7 @@
 name = "pi"
 version = "0.1.0"
 authors = ["Sergio Benitez <sb@sergio.bz>"]
+edition = "2021"
 
 [dependencies]
 custom-std = { path = "../std", package = "std", optional = true } # Use customized std

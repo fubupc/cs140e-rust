@@ -6,7 +6,6 @@
 // #![feature(attr_literals)]
 #![feature(never_type)]
 // #![feature(pointer_methods)]
-
 #![no_std]
 #![allow(unused)]
 
@@ -14,8 +13,6 @@
 extern crate custom_std as std;
 #[cfg(not(feature = "custom-std"))]
 extern crate std;
-
-extern crate volatile;
 
 pub mod atags;
 pub mod common;

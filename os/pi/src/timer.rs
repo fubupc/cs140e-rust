@@ -1,6 +1,8 @@
-use common::IO_BASE;
+use core::arch::asm;
+
+use crate::common::IO_BASE;
 use volatile::prelude::*;
-use volatile::{Volatile, ReadVolatile};
+use volatile::{ReadVolatile, Volatile};
 
 /// The base address for the ARM system timer registers.
 const TIMER_REG_BASE: usize = IO_BASE + 0x3000;
@@ -11,12 +13,12 @@ struct Registers {
     CS: Volatile<u32>,
     CLO: ReadVolatile<u32>,
     CHI: ReadVolatile<u32>,
-    COMPARE: [Volatile<u32>; 4]
+    COMPARE: [Volatile<u32>; 4],
 }
 
 /// The Raspberry Pi ARM system timer.
 pub struct Timer {
-    registers: &'static mut Registers
+    registers: &'static mut Registers,
 }
 
 impl Timer {
@@ -55,4 +57,10 @@ pub fn spin_sleep_us(us: u64) {
 /// Spins until `ms` milliseconds have passed.
 pub fn spin_sleep_ms(ms: u64) {
     spin_sleep_us(ms * 1000)
+}
+
+pub fn wait_cycles(n: u64) {
+    for _ in 0..n {
+        unsafe { asm!("nop") }
+    }
 }
