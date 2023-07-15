@@ -1,5 +1,8 @@
-use std::io;
+use core::time::Duration;
 use fat32::traits::BlockDevice;
+use pi::timer::{current_time, spin_sleep_us, wait_cycles};
+use sd::spec::timer::Timer;
+use std::io;
 
 extern "C" {
     /// A global representing the last SD controller error that occured.
@@ -63,5 +66,27 @@ impl BlockDevice for Sd {
 
     fn write_sector(&mut self, _n: u64, _buf: &[u8]) -> io::Result<usize> {
         unimplemented!("SD card and file system are read only")
+    }
+}
+
+pub struct SpinTimer;
+
+impl Timer for SpinTimer {
+    fn wait_for<C: Fn() -> bool>(&self, condition: C, timeout: Duration) -> Result<Duration, ()> {
+        let start = current_time();
+        while !condition() {
+            if (current_time() - start) as u128 > timeout.as_micros() {
+                return Err(());
+            }
+        }
+        Ok(Duration::from_micros(current_time() - start))
+    }
+
+    fn wait(&self, d: core::time::Duration) {
+        spin_sleep_us(d.as_micros() as u64)
+    }
+
+    fn wait_cycles(&self, n: u64) {
+        wait_cycles(n)
     }
 }
