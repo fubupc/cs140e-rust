@@ -1,4 +1,7 @@
+#![feature(decl_macro)]
 #![feature(lang_items)]
+#![feature(negative_impls)]
+#![feature(panic_info_message)]
 #![feature(prelude_import)]
 #![no_std]
 #![no_main]
@@ -14,7 +17,9 @@ use std::prelude::v1::*;
 // #[macro_use]
 // extern crate alloc;
 
+mod console;
 mod lang_items;
+mod mutex;
 
 use pi;
 use xmodem;
@@ -23,6 +28,8 @@ use core::{
     arch::{asm, global_asm},
     fmt::Write,
 };
+
+use crate::console::{kprint, kprintln};
 global_asm!(include_str!("../ext/init.S"));
 
 /// Start address of the binary to load and of the bootloader.
@@ -52,19 +59,24 @@ pub extern "C" fn kmain() {
     let mut uart = pi::uart::MiniUart::new();
     uart.set_read_timeout(750);
 
-    loop {
-        uart.write_str("Bootloader is waiting to receive kernel...\n")
-            .unwrap();
-        pi::timer::spin_sleep_ms(5000);
+    kprintln!("\nReady to receive kernel");
 
+    loop {
         let buf = unsafe { core::slice::from_raw_parts_mut(BINARY_START, MAX_BINARY_SIZE) };
 
         match xmodem::Xmodem::receive(&mut uart, buf) {
             Ok(_) => {
-                uart.write_str("Kernel received OK, about to start in 5 seconds...\n")
-                    .unwrap();
-                pi::timer::spin_sleep_ms(5000);
-                jump_to(BINARY_START)
+                // Repeatedly print until receive any user input
+                loop {
+                    uart.write_byte(b'\r'); // Carriage Return without Line Feed
+                    kprint!("Kernel received, press any key to continue");
+                    match uart.wait_for_byte() {
+                        Ok(_) => break,
+                        Err(_) => {}
+                    }
+                }
+                kprint!("\n");
+                jump_to(BINARY_START);
             }
             Err(err) => match err.kind() {
                 io::ErrorKind::TimedOut => {}
