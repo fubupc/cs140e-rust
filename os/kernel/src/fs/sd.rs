@@ -1,8 +1,13 @@
 use core::time::Duration;
 use fat32::traits::BlockDevice;
 use pi::timer::{current_time, spin_sleep_us, wait_cycles};
-use sd::spec::timer::Timer;
+use sd::interface::Debugger;
+use sd::interface::Timer;
 use std::io;
+
+use crate::console::_print;
+use crate::console::kprint;
+use crate::console::kprintln;
 
 extern "C" {
     /// A global representing the last SD controller error that occured.
@@ -70,7 +75,6 @@ impl BlockDevice for Sd {
 }
 
 pub struct SpinTimer;
-
 impl Timer for SpinTimer {
     fn wait_for<C: Fn() -> bool>(&self, condition: C, timeout: Duration) -> Result<Duration, ()> {
         let start = current_time();
@@ -88,5 +92,16 @@ impl Timer for SpinTimer {
 
     fn wait_cycles(&self, n: u64) {
         wait_cycles(n)
+    }
+}
+
+pub struct ConsoleDebugger;
+impl Debugger for ConsoleDebugger {
+    fn log_str(&self, msg: &str) {
+        kprintln!("{}", msg)
+    }
+
+    fn log_fmt(&self, arg: core::fmt::Arguments) {
+        _print(arg)
     }
 }
