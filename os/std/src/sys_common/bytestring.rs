@@ -10,8 +10,8 @@
 
 #![allow(dead_code)]
 
-use fmt::{Formatter, Result, Write};
 use core::str::Utf8Chunks;
+use fmt::{Formatter, Result, Write};
 
 pub fn debug_fmt_bytestring(slice: &[u8], f: &mut Formatter) -> Result {
     // Writes out a valid unicode string with the correct escape sequences
@@ -23,7 +23,7 @@ pub fn debug_fmt_bytestring(slice: &[u8], f: &mut Formatter) -> Result {
     }
 
     f.write_str("\"")?;
-    for chunk in Utf8Chunks::new(slice) {
+    for chunk in slice.utf8_chunks() {
         write_str_escaped(f, chunk.valid())?;
         for b in chunk.invalid() {
             write!(f, "\\x{:02X}", b)?;
@@ -35,7 +35,7 @@ pub fn debug_fmt_bytestring(slice: &[u8], f: &mut Formatter) -> Result {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use fmt::{Formatter, Result, Debug};
+    use fmt::{Debug, Formatter, Result};
 
     #[test]
     fn smoke() {
@@ -47,7 +47,7 @@ mod tests {
             }
         }
 
-        let input =      b"\xF0hello,\tworld";
+        let input = b"\xF0hello,\tworld";
         let expected = r#""\xF0hello,\tworld""#;
         let output = format!("{:?}", Helper(input));
 

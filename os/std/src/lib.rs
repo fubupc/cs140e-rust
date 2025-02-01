@@ -275,7 +275,7 @@
 // #![feature(i128_type)]
 // #![feature(inclusive_range)]
 // #![feature(int_error_internals)]
-#![feature(integer_atomics)]
+// #![feature(integer_atomics)]
 // #![feature(into_cow)]
 #![feature(lang_items)]
 #![feature(libc)]
@@ -327,6 +327,7 @@
 #![feature(doc_cfg)]
 #![feature(doc_masked)]
 #![feature(doc_notable_trait)]
+#![feature(custom_inner_attributes)]
 
 // #![feature(shared)] //- added due to no NonNull changes
 // #![feature(unique)] //- added due to no NonNull changes

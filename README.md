@@ -9,10 +9,10 @@ The original course uses these build tools:
 2. `Xargo` to build and customize Rust's `std` library
 3. `aarch64-none-elf` GNU toolchain
 
-But newer Rust (e.g. `nightly-2023-05-25`) provides `-build-std` feature and good support for `aarch64-unknown-none` target so `Xargo` and `aarch64-none-elf` GNU toolchain are no longer needed:
+But newer Rust (e.g. `nightly-2025-01-24`) provides `-build-std` feature and good support for `aarch64-unknown-none` target so `Xargo` and `aarch64-none-elf` GNU toolchain are no longer needed:
 
 ```Shell
-rustup default nightly-2023-05-25
+rustup default nightly-2025-01-24
 cargo install cargo-binutils # make it easy to use the LLVM tools
 ```
 
