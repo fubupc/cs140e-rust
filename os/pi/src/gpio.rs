@@ -5,6 +5,7 @@ use volatile::prelude::*;
 use volatile::{ReadVolatile, Reserved, Volatile, WriteVolatile};
 
 /// An alternative GPIO function.
+#[derive(Debug)]
 #[repr(u8)]
 pub enum Function {
     Input = 0b000,
@@ -15,6 +16,23 @@ pub enum Function {
     Alt3 = 0b111,
     Alt4 = 0b011,
     Alt5 = 0b010,
+}
+impl TryFrom<u8> for Function {
+    type Error = u8;
+
+    fn try_from(v: u8) -> Result<Self, Self::Error> {
+        match v {
+            0b000 => Ok(Self::Input),
+            0b001 => Ok(Self::Output),
+            0b100 => Ok(Self::Alt0),
+            0b101 => Ok(Self::Alt1),
+            0b110 => Ok(Self::Alt2),
+            0b111 => Ok(Self::Alt3),
+            0b011 => Ok(Self::Alt4),
+            0b010 => Ok(Self::Alt5),
+            _ => Err(v),
+        }
+    }
 }
 
 #[repr(C)]
@@ -78,6 +96,15 @@ impl<T> Gpio<T> {
             registers: self.registers,
             _state: PhantomData,
         }
+    }
+
+    pub fn function(&self) -> Function {
+        let reg_idx = self.pin as usize / 10;
+        let shift_bit_num = (self.pin as usize % 10) * 3;
+
+        let reg = &self.registers.FSEL[reg_idx];
+        let f = (reg.read() >> shift_bit_num & 0b111) as u8;
+        Function::try_from(f).unwrap()
     }
 }
 
