@@ -1,6 +1,6 @@
 use core::time::Duration;
 use fat32::traits::BlockDevice;
-use pi::timer::{current_time, spin_sleep_us, wait_cycles};
+use pi::timer;
 use sd::interface::Debugger;
 use sd::interface::Timer;
 use std::io;
@@ -74,24 +74,27 @@ impl BlockDevice for Sd {
     }
 }
 
-pub struct SpinTimer;
-impl Timer for SpinTimer {
-    fn wait_for<C: Fn() -> bool>(&self, condition: C, timeout: Duration) -> Result<Duration, ()> {
-        let start = current_time();
-        while !condition() {
-            if (current_time() - start) as u128 > timeout.as_micros() {
-                return Err(());
-            }
+pub struct PiTimer;
+impl Timer for PiTimer {
+    // fn wait_for<C: Fn() -> bool>(&self, condition: C, timeout: Duration) -> Result<Duration, ()> {
+    //     let start = current_time();
+    //     while !condition() {
+    //         if (current_time() - start) as u128 > timeout.as_micros() {
+    //             return Err(());
+    //         }
+    //     }
+    //     Ok(Duration::from_micros(current_time() - start))
+    // }
+
+    fn clock_tick(&self) -> u64 {
+        timer::current_time()
+    }
+
+    fn time_diff(&self, start: u64, end: u64) -> Duration {
+        if end < start {
+            panic!("PiTimer: end tick < start tick")
         }
-        Ok(Duration::from_micros(current_time() - start))
-    }
-
-    fn wait(&self, d: core::time::Duration) {
-        spin_sleep_us(d.as_micros() as u64)
-    }
-
-    fn wait_cycles(&self, n: u64) {
-        wait_cycles(n)
+        Duration::from_micros(end - start)
     }
 }
 
